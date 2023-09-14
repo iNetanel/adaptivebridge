@@ -1,5 +1,7 @@
 # FeatureBridge
 
+![Project Image](http://inetanel.com/wp-content/uploads/FeatureBridge-logo-small.jpg)
+
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/iNetanel/featurebridge)
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
@@ -11,8 +13,6 @@
 ## Overview
 
 FeatureBridge is a revolutionary adaptive modeling for machine learning applications, particularly in the realm of Artificial Intelligence. It tackles a common challenge in AI projects: handling missing features in real-world scenarios. Machine learning models are often trained on specific features, but when deployed, users may not have access to all those features for predictions. FeatureBridge bridges this gap by enabling models to intelligently predict and fill in missing features, similar to how humans handle incomplete data. This ensures that AI models can seamlessly manage missing data and features while providing accurate predictions.
-
-![AI Project Image](http://inetanel.com/wp-content/uploads/FeatureBridge-logo-small.jpg)
 
 ### Key Features
 
@@ -34,14 +34,16 @@ Follow these steps to get started with FeatureBridge:
 1. Clone this repository:
 
    ```shell
-   git clone https://github.com/yourusername/your-repo.git
+   git clone https://github.com/iNetanel/featurebridge.git
    pip install -r requirements.txt
+   
+   #OR
+   pip install featurebridge
    
 ## Dependencies 
 
 - NumPy
 - pandas
-- scikit-learn
 - matplotlib
 
 ## Contribution
