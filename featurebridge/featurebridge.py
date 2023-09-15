@@ -1,29 +1,10 @@
+#!/bin/env python
 '''
     Project Name: FeatureBridge
-    Initial Created: 01.07.2023
     Author: Netanel Eliav
+    Author Email: inetanel@me.com
     License: MIT License
     Version: Please refer to the repository for the latest version and updates.
-
-    Desctiption:
-    FeatureBridge is a revolutionary ML adaptive modelling that addresses a common challenge in machine learning: handling missing features in real-world applications.
-    Often, machine learning models are trained on a specific set of features, but when deployed, users might not have access to all those features for prediction.
-    FeatureBridge bridges this gap by enabling models to predict missing features, much like humans do when handling incomplete data.
-    This ensures that your model can seamlessly manage missing data and features while providing the required predictions with minimal impact on accuracy.
-
-
-    Key Features:
-        - Missing Feature Prediction: FeatureBridge allows machine learning models to predict and fill in missing features based on the available data.
-        - Feature Selection: Select relevant features using configurable thresholds for importance, correlation, and accuracy.
-        - Adaptive Modeling: Utilize machine learning models to predict missing features, maintaining high prediction accuracy even with incomplete data.
-        - Custom Accuracy Logic: Define your own accuracy calculation logic to fine-tune feature selection.
-        - Feature Distribution Handling: Automatically determine the best method for handling feature distribution based on data characteristics.
-        - Dependency Management: Identify mandatory, deviation, and leveled features to optimize model performance.
-
-    Usage:
-    With FeatureBridge, you can easily integrate this powerful tool into your machine learning pipeline.
-    Fit the class to your data, and let it handle missing features intelligently.
-    Detailed comments and documentation are provided for straightforward implementation.
 '''
 
 # Import necessary libraries
@@ -37,7 +18,7 @@ from itertools import combinations
 class FeatureBridge:
     def __init__(self, model, correlation_threshold=0.3, min_accuracy=0.5, default_accuracy_selection=0.95, importancy_threshold=0.1, accuracy_logic=None):
         """
-        Initialize the FeatureBridge object.
+        Initialize the main FeatureBridge object.
 
         Parameters:
             model (object): The machine learning model (e.g., LinearRegression) to be used for modeling.

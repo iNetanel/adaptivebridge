@@ -6,9 +6,13 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 - **Project Name:** FeatureBridge
-- **Initial Created:** 01.07.2023
 - **Author:** Netanel Eliav
+- **Author Website:** https://inetanel.com
+- **Author Email:** inetanel@me.com
 - **License:** MIT License
+- **Documentation:** https://github.com/iNetanel/featurebridge/wiki
+- **Issue Tracker:** https://github.com/iNetanel/featurebridge/issues
+
 
 ## Overview
 
@@ -43,8 +47,8 @@ Follow these steps to get started with FeatureBridge:
 ## Dependencies 
 
 - NumPy
-- pandas
-- matplotlib
+- Pandas
+- Matplotlib
 
 ## Contribution
 
