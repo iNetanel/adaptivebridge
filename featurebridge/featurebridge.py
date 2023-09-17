@@ -13,6 +13,7 @@ import pandas as pd
 import copy, time
 import matplotlib.pyplot as plt
 from itertools import combinations
+from featurebridge.utils import Utils
 
 # Define a class named FeatureBridge
 class FeatureBridge:
@@ -32,6 +33,7 @@ class FeatureBridge:
             None
         """
 
+        self.utils = Utils()
         self.correlation_threshold = correlation_threshold
         self.min_accuracy = min_accuracy
         self.importance_threshold = importance_threshold
@@ -151,34 +153,27 @@ class FeatureBridge:
 
         feature_distribution = {}
         for feature in self.x_df.columns:
-            # Calculate coefficient of variation (CV)
-            cv = self.data_distribution.loc['std', feature] / self.data_distribution.loc['mean', feature]
-            if cv >= 1:
-                cv = 'mean'
-            else:
-                cv = '50%'
             # Check if data is binary (0 or 1)
+            feature_distribution[feature] = feature_distribution[feature] = self.utils.fit_distribution(self.x_df[feature])
             unique_values = self.x_df[feature].unique()
             if len(unique_values) == 2 and 0 in unique_values and 1 in unique_values:
-                if self.data_distribution.loc['mean', feature] > 0.5:
-                    feature_distribution[feature] = 1
+                if feature_distribution[feature][2] > 0.5:
+                    feature_distribution[feature][2] = 1
                 else:
-                    feature_distribution[feature] = 0
+                    feature_distribution[feature][2] = 0
             # Check if data is boolean (True or False)
             elif self.x_df[feature].dtype == bool:
                 value_counts = self.x_df[feature].value_counts()
                 if value_counts[True] > value_counts[False]:
-                    feature_distribution[feature] = True
+                    feature_distribution[feature][2] = True
                 else:
-                    feature_distribution[feature] = False
+                    feature_distribution[feature][2] = False
             else:
                 # Check if the data resembles integers
                 is_integer_column = self.x_df[feature].apply(lambda x: int(x) == x if str(x).replace(".", "").isdigit() else False)
 
                 if is_integer_column.all():
-                    feature_distribution[feature] = round(self.data_distribution.loc[cv, feature])
-                else:
-                    feature_distribution[feature] = self.data_distribution.loc[cv, feature]
+                    feature_distribution[feature][2] = round(feature_distribution[feature][2])
 
         return feature_distribution
 
@@ -433,9 +428,9 @@ class FeatureBridge:
         # Handling of data distribution method
         for feature in self.feature_map['deviation']:
             if feature not in x_df.columns:
-                x_df[feature] = self.feature_map['deviation'][feature]['distribution']
+                x_df[feature] = self.feature_map['deviation'][feature]['distribution'][2]
             if x_df[feature].isna().any().any():
-                x_df[feature] = x_df[feature].fillna(self.feature_map['deviation'][feature]['distribution'])
+                x_df[feature] = x_df[feature].fillna(self.feature_map['deviation'][feature]['distribution'][2])
 
         # Handling missing features with adaptive prediction
         for feature in self.feature_map['adaptive']:
@@ -470,19 +465,9 @@ class FeatureBridge:
 
         acc_results = []
         test_results = []
-        features_to_drop = []
+        test_results.append(ypred)
 
-        print('FeatureBridge Pyramid Accuracy:')
-        for feature in (list(self.feature_map['deviation'].keys()) + list(self.feature_map['adaptive'].keys())):
-            features_to_drop.append(feature)
-            xtest_x = x_test_df.drop(features_to_drop, axis=1)
-            ypred = self.predict(xtest_x)
-            test_results.append(ypred)
-            acc = self.accuracy(y_text_df, ypred)
-            acc_results.append(acc)
-            print(f'-- {acc} Accuracy -- when {features_to_drop} was missing')
-
-        print('\nData Distribution Plot for FeatureBridge Pyramid:')
+        print('Data Distribution Plot for FeatureBridge Pyramid:')
         x_ax = range(len(test_results[0]))
         for count, result in enumerate(test_results):
             plt.plot(x_ax, result, linewidth=1, label=count)
@@ -495,7 +480,6 @@ class FeatureBridge:
 
         acc_results = []
         test_results = []
-        features_to_drop = []
         for feature in (list(self.feature_map['deviation'].keys()) + list(self.feature_map['adaptive'].keys())):
             xtest_x = x_test_df.drop(feature, axis=1)
             ypred = self.predict(xtest_x)
@@ -514,7 +498,6 @@ class FeatureBridge:
         print("FeatureBridge Performance Matrix:\nThis shows the performance of FeatureBridge, the average accuracy for every number of features missing.\n---")
         acc_results = []
         test_results = []
-        features_to_drop = []
         all_combinations = []
         list_combinations = []
         main_accuracy = []
@@ -522,7 +505,6 @@ class FeatureBridge:
         for r in range(1, len(base_f)):
             acc_results = []
             test_results = []
-            features_to_drop = []
             all_combinations = []
             list_combinations = []
             all_combinations = combinations(base_f, r)
