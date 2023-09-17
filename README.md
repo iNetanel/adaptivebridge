@@ -21,7 +21,7 @@ FeatureBridge is a revolutionary adaptive modeling for machine learning applicat
 ### Key Features
 
 - **Missing Feature Prediction:** FeatureBridge empowers AI models to predict and fill in missing features based on the available data.
-- **Feature Selection:** You can select relevant features using configurable thresholds for importance, correlation, and accuracy.
+- **Feature Selection for Mapping:** You can impact the features prediction methods by using configurable thresholds for importance, correlation, and accuracy.
 - **Adaptive Modeling:** Utilize machine learning models to predict missing features, maintaining high prediction accuracy even with incomplete data.
 - **Custom Accuracy Logic:** Define your own accuracy calculation logic to fine-tune feature selection.
 - **Feature Distribution Handling:** Automatically determine the best method for handling feature distribution based on data characteristics.
