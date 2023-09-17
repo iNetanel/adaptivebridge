@@ -54,6 +54,18 @@ Follow these steps to get started with FeatureBridge:
 
 Contributions and feedback are highly encouraged. You can open issues, submit pull requests for enhancements or bug fixes, and be part of the AI community that advances FeatureBridge.
 
+## Development Progress
+Please see development progress.
+```mermaid
+graph LR
+X{Research} -- Planing --> A
+A[Feature POC Development] -- Testing --> B((Reviewing)) -- Fixing --> A
+B -- Scale up --> C(Feature MVP Development) -- Testing --> D
+D((Reviewing))-- Fixing --> C
+D --> E{Deployment}
+E-- Next Phase--> X
+```
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
