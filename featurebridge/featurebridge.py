@@ -10,7 +10,7 @@
 # Import necessary libraries
 import numpy as np
 import pandas as pd
-import copy
+import copy, time
 import matplotlib.pyplot as plt
 from itertools import combinations
 
@@ -21,7 +21,7 @@ class FeatureBridge:
         Initialize the main FeatureBridge object.
 
         Parameters:
-            model (object): The machine learning model (e.g., LinearRegression) to be used for modeling.
+            model (object): The machine learning model backbone (e.g., LinearRegression) to be used for modeling.
             correlation_threshold (float): The correlation threshold for feature selection based on correlation.
             min_accuracy (float): The minimum accuracy required for feature selection.
             default_accuracy_selection (float): The default accuracy threshold for feature selection.
@@ -34,7 +34,7 @@ class FeatureBridge:
 
         self.correlation_threshold = correlation_threshold
         self.min_accuracy = min_accuracy
-        self.feature_importanceportancy_th = importance_threshold
+        self.importance_threshold = importance_threshold
         self.default_accuracy_selection = default_accuracy_selection
         self.model = copy.deepcopy(model)  # Create a deep copy of the provided machine learning model
         self.accuracy_logic = accuracy_logic
@@ -47,6 +47,7 @@ class FeatureBridge:
         self.data_distribution = None  # Placeholder for data distribution statistics
         self.feature_distribution = None  # Placeholder for feature distribution statistics
         self.model_map = None  # Placeholder for a mapping of features and models
+        self.training_time = None
 
     # Define a custom exception class
     class MandatoryFeatureError(Exception):
@@ -60,8 +61,21 @@ class FeatureBridge:
         Returns:
             FeatureBridge internal information
         """
-    
-        return f'{self.x_df}({self.feature_importance})'
+        message = f'''
+        FeatureBridge Class:
+         - Parameters:
+            - Model (Backbone) = {self.model.__class__.__name__}
+            - Correlation Threshold = {self.correlation_threshold}
+            - Minimum Accuracy = {self.min_accuracy}
+            - Default Accuracy Selection = {self.default_accuracy_selection}
+            - Importance Threshold = {self.importance_threshold}
+            - Accuracy Logic = {self.accuracy_logic}
+         - Model:
+            - Trained = {self.model_map is not None}
+            - Training UTC Time = {self.training_time}
+         '''
+
+        return message
 
     # Method to fit the model to the data
     def fit(self, x_df, y_df):
@@ -85,7 +99,7 @@ class FeatureBridge:
         self.max_index = self.feature_importance.idxmax()  # Find the index of the maximum feature importance
         self.data_distribution = self.x_df.describe()  # Calculate data distribution statistics
         self.feature_distribution = self.distribution()  # Calculate feature distribution statistics
-        self.model_map = self.model_mapping()  # Create a mapping of features and models
+        self.model_map, self.training_time = self.model_mapping()  # Create a mapping of features and models
         self.feature_mapping()
 
     # Method to make predictions
@@ -100,7 +114,7 @@ class FeatureBridge:
             array: Predicted values.
         """
 
-        x_df = self.df_fit(x_df)
+        x_df = self.df_bridge(x_df)
         return self.model.predict(x_df)
 
     # Method to calculate feature importance
@@ -213,6 +227,7 @@ class FeatureBridge:
 
         Returns:
             dict: Mapping of features to models and accuracy.
+            timestamp: the last time .fit method was executed (aka training).
         """
 
         model = copy.deepcopy(self.model)
@@ -243,7 +258,11 @@ class FeatureBridge:
                     if acc >= self.default_accuracy_selection:
                         break
                 i += 1
-        return model_map
+        
+
+        # Set time and format the UTC time as a string
+        formatted_utc_time = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(time.time()))
+        return model_map, formatted_utc_time
 
     # Method to identify mandatory and deviation features
     def mandatory_and_distribution(self):
@@ -257,7 +276,7 @@ class FeatureBridge:
         for feature in self.model_map:
             for i in self.model_map[feature]:
                 if self.model_map[feature][i]['features'] is None:
-                    if (self.feature_importance[feature] / (np.sum(self.feature_importance, axis=0))) > self.feature_importanceportancy_th:
+                    if (self.feature_importance[feature] / (np.sum(self.feature_importance, axis=0))) > self.importance_threshold:
                         self.feature_map['mandatory'][feature] = self.model_map[feature][i]
                     else:
                         self.feature_map['deviation'][feature] = self.model_map[feature][i]
@@ -300,7 +319,7 @@ class FeatureBridge:
 
                 if model_map_l1:
                     model_map_l1_sorted = dict(sorted(model_map_l1.items(), key=lambda item: item[1]['accuracy'], reverse=False))
-                    if (self.feature_importance[next(iter(model_map_l1_sorted))]/(np.sum(self.feature_importance, axis=0))) > self.feature_importanceportancy_th:
+                    if (self.feature_importance[next(iter(model_map_l1_sorted))]/(np.sum(self.feature_importance, axis=0))) > self.importance_threshold:
                         self.feature_map['mandatory'][next(iter(model_map_l1_sorted))] = model_map_l1_sorted[next(iter(model_map_l1_sorted))]
                         del self.model_map[next(iter(model_map_l1_sorted))]
                     else:
@@ -373,7 +392,7 @@ class FeatureBridge:
         return accu
 
     # Method to predict using the adaptive model
-    def predict_adaptive(self, x_df, feature):
+    def adaptive_predict(self, x_df, feature):
         """
         Make adaptive predictions for a specific feature.
 
@@ -393,7 +412,7 @@ class FeatureBridge:
         return prediction.flatten().astype(float)
 
     # Method to prepare the input data frame for prediction
-    def df_fit(self, x_df):
+    def df_bridge(self, x_df):
         """
         Prepare the input data frame for prediction.
 
@@ -409,26 +428,28 @@ class FeatureBridge:
                 raise self.MandatoryFeatureError("A mandatory feature is completely missing: {}".format(feature))
             else:
                 if x_df[feature].isna().any().any():
-                    raise self.MandatoryFeatureError("A mandatory feature is partially missing: {}".format(feature))
+                    raise self.MandatoryFeatureError("A mandatory feature is partially missing: {} > (please check for NaN values in your dataset)".format(feature))
 
-        # Handling of deviation features
+        # Handling of data distribution method
         for feature in self.feature_map['deviation']:
             if feature not in x_df.columns:
                 x_df[feature] = self.feature_map['deviation'][feature]['distribution']
             if x_df[feature].isna().any().any():
                 x_df[feature] = x_df[feature].fillna(self.feature_map['deviation'][feature]['distribution'])
 
-        # Handling of prediction loop features
+        # Handling missing features with adaptive prediction
         for feature in self.feature_map['adaptive']:
             if feature not in x_df.columns:
-                x_df[feature] = self.predict_adaptive(x_df[self.feature_map['adaptive'][feature]['features']], feature)
+                x_df[feature] = self.adaptive_predict(x_df[self.feature_map['adaptive'][feature]['features']], feature)
             if x_df[feature].isna().any().any():
-                pass  # TODO: Allow partial missing values for these features.
-
+                # pass  # TODO: Allow partial missing values for these features.
+                mask = x_df[feature].isna()
+                x_df.loc[mask, feature] = self.adaptive_predict(x_df.loc[mask][self.feature_map['adaptive'][feature]['features']], feature)
+                
         # Reorder columns to match the original data frame
         x_df = x_df.reindex(columns=self.x_df.columns)
         return x_df
-
+    
     # Method to benchmark the model
     def benchmark(self, x_test_df, y_text_df):
         """
@@ -461,7 +482,7 @@ class FeatureBridge:
             acc_results.append(acc)
             print(f'-- {acc} Accuracy -- when {features_to_drop} was missing')
 
-        print('Data Distribution Plot for FeatureBridge Pyramid:')
+        print('\nData Distribution Plot for FeatureBridge Pyramid:')
         x_ax = range(len(test_results[0]))
         for count, result in enumerate(test_results):
             plt.plot(x_ax, result, linewidth=1, label=count)
