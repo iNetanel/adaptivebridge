@@ -9,15 +9,63 @@
 
 # Import necessary libraries
 import numpy as np
+import pandas as pd
 from scipy.stats import genextreme, gamma, lognorm, dweibull, pareto, beta
+from scipy import sparse
 from distfit import distfit
+
+def _convert_to_dataframe(obj, data_type):
+    # Determine the type of the input object
+    if isinstance(obj, np.ndarray):
+        # If it's a NumPy array, convert it to a Pandas DataFrame or Pandas Series
+        if data_type == 'dataframe':
+            return pd.DataFrame(obj)
+        else:
+            return pd.Series(obj)
+    elif isinstance(obj, pd.DataFrame):
+        # If it's already a DataFrame, return it as if it's for features and return it as is if it's for target
+        if data_type == 'dataframe':
+            return obj
+        else:
+            return pd.Series(obj)
+    elif isinstance(obj, pd.Series):
+        # If it's already a DataFrame, return it as if it's for features and return it as is if it's for target
+        if data_type == 'dataframe':
+            return obj.to_frame()
+        else:
+            return obj
+    elif isinstance(obj, list):
+        # If it's a Python list, convert it to a DataFrame if it's for features and return it as is if it's for target
+        if data_type == 'dataframe':
+            return pd.DataFrame(obj)
+        else:
+            return pd.Series(obj)
+    elif isinstance(obj, dict):
+        # If it's a dictionary, convert it to a DataFrame using DictVectorizer
+        if data_type == 'dataframe':
+            from sklearn.feature_extraction import DictVectorizer
+            vec = DictVectorizer(sparse=False)
+            return pd.DataFrame(vec.fit_transform(obj))
+        else:
+            from sklearn.feature_extraction import DictVectorizer
+            vec = DictVectorizer(sparse=False)
+            return pd.Series(vec.fit_transform(obj))
+    elif isinstance(obj, (sparse.csr.csr_matrix, sparse.csc.csc_matrix)):
+        # If it's a sparse matrix, convert it to a Pandas DataFrame
+        if data_type == 'dataframe':
+            return pd.DataFrame(obj.toarray())
+        else:
+            return pd.Series(obj.toarray())
+    else:
+        raise ValueError(f"Unsupported data type {type(obj)}. Supported types are NumPy arrays, Pandas DataFrames, Python lists, dictionaries, and sparse matrices.")
+
 
 class Utils():
     def __init__(self):
         pass
 
     # Define a function to choose the best central tendency method for Pareto distribution
-    def pareto_choose_central_tendency(self, x_df):
+    def _pareto_choose_central_tendency(self, x_df):
         # Calculate the mean, median, and mode of the data based on the Pareto distribution
         shape, loc, scale = pareto.fit(x_df, floc=0)
         
@@ -28,7 +76,7 @@ class Utils():
 
         if np.isnan(mode_pareto):
             # Data may not have a well-defined mode for certain parameter combinations, so use mean or median
-            return "Mean" if mean_pareto <= median_pareto else "median"
+            return "mean" if mean_pareto <= median_pareto else "median"
         else:
             # Choose the method based on the mode and other central tendency measures
             if mean_pareto <= median_pareto:
@@ -39,7 +87,7 @@ class Utils():
                 return "mode"
 
     # Define a function to choose the best central tendency method for Double Weibull distribution
-    def dweibull_choose_central_tendency(self, x_df):
+    def _dweibull_choose_central_tendency(self, x_df):
         # Calculate the mean, median, and mode of the data based on the Double Weibull distribution
         c, loc, scale = dweibull.fit(x_df, floc=0)
         mean_dweibull = scale * np.exp(np.log(2) / c)  # Mean of Double Weibull distribution
@@ -59,7 +107,7 @@ class Utils():
                 return "mode"
 
     # Define a function to choose the best central tendency method for GEV distribution
-    def genextreme_choose_central_tendency(self, x_df):
+    def _genextreme_choose_central_tendency(self, x_df):
         # Calculate the mean, median, and mode of the data based on the GEV distribution
         c, loc, scale = genextreme.fit(x_df)
         mean_gev = loc + scale * (1 - c)**(-1) if c != 0 else np.inf
@@ -79,7 +127,7 @@ class Utils():
                 return "mode"
 
     # Define a function to choose the best central tendency method for Gamma distribution
-    def gamma_choose_central_tendency(self, x_df):
+    def _gamma_choose_central_tendency(self, x_df):
         # Calculate the mean, median, and mode of the data based on the gamma distribution
         shape, loc, scale = gamma.fit(x_df)
         mean_gamma = shape * scale
@@ -98,7 +146,7 @@ class Utils():
             else:
                 return "mode"
 
-    def lognorm_choose_central_tendency(self, x_df):
+    def _lognorm_choose_central_tendency(self, x_df):
         # Calculate the mean and median of the log-transformed data for Log-Transformed distribution
         log_data = np.log(x_df)
         mean_log = np.mean(log_data)
@@ -121,7 +169,7 @@ class Utils():
             return "mode"
 
     # Define a function to choose the best central tendency method for Beta distribution
-    def beta_choose_central_tendency(self, x_df):
+    def _beta_choose_central_tendency(self, x_df):
         # Calculate the mean, median, and mode of the data based on the beta distribution
         a, b, loc, scale = beta.fit(x_df, floc=0)
         
@@ -146,7 +194,7 @@ class Utils():
                 return "mode"
 
     # Define a function to choose the best central tendency method for Uniform distribution
-    def uniform_choose_central_tendency(self, x_df):
+    def _uniform_choose_central_tendency(self, x_df):
         mean_uniform = np.mean(x_df)
         median_uniform = np.median(x_df)
         
@@ -157,65 +205,126 @@ class Utils():
             return "median"
 
     # Define a function to choose the best central tendency method for Log-Gamma distribution
-    def loggamma_choose_central_tendency(self, x_df):
+    def _loggamma_choose_central_tendency(self, x_df):
         # TODO > technical debt for Log-Gamma distribution.
         return "mean"
 
-    # Main distribution fitting method
-    def fit_distribution(self, x_df):
-        # List of candidate distributions to test
-        '''
-            Distributions supported:
-                - "norm",        # Normal distribution
-                - "expon",       # Exponential distribution
-                - "gamma",       # Gamma distribution
-                - "dweibull", # Weibull distribution
-                - "lognorm",     # Log-normal distribution
-                - "pareto",      # Pareto distribution
-                - "t",            # Student's t distribution
-                - "beta",         # Beta distribution
-                - "uniform",      # Uniform distribution
-                - "loggamma"      # Log-Gamma distribution
-        '''
+    # Define a function to detect the type of distribution (between continuous and discrete)
+    def high_level_distribution(self, x_df):
+        # Calculate the range of the data
+        data_range = max(x_df) - min(x_df)
 
-        # Initialize variables to store goodness of fit results
-        dfit = distfit(distr='popular')
-        
-        # Find best theoretical distribution for empirical x_df
-        dfit.fit_transform(x_df, verbose=0) #verbose=0
-        
-        min_index = dfit.summary['score'].idxmin()
-        best_distribution = dfit.summary.loc[min_index, 'name']
+        # Count the number of unique values
+        unique_values = len(set(x_df))
 
-        if best_distribution == 'norm':
-            central_tendency = 'mean'
-        elif best_distribution == 'expon':
-            central_tendency = 'median'
-        elif best_distribution == 'pareto':
-                central_tendency = self.pareto_choose_central_tendency(x_df)
-        elif best_distribution == 'dweibull':
-                central_tendency = self.dweibull_choose_central_tendency(x_df)
-        elif best_distribution == 't':
-            central_tendency = 'mean'
-        elif best_distribution == 'genextreme':
-            central_tendency = self.genextreme_choose_central_tendency(x_df)
-        elif best_distribution == 'gamma':
-            central_tendency = self.gamma_choose_central_tendency(x_df)
-        elif best_distribution == 'lognorm':
-            central_tendency = self.lognorm_choose_central_tendency(x_df)
-        elif best_distribution == 'beta':
-            central_tendency = self.beta_choose_central_tendency(x_df)
-        elif best_distribution == 'uniform':
-            central_tendency = self.uniform_choose_central_tendency(x_df)
-        elif best_distribution == 'loggamma':
-            central_tendency = self.loggamma_choose_central_tendency(x_df)
+        # Determine the threshold for considering data as discrete
+        discrete_threshold = 10
 
-        if central_tendency == 'mean':
-            central_tendency_value = x_df.mean()
-        elif central_tendency == 'median':
-            central_tendency_value = x_df.median()
+        # Compare range and unique values to the threshold
+        if data_range <= discrete_threshold or unique_values <= discrete_threshold:
+            return 'discrete'
         else:
-            mode_values = x_df.mode()
-            central_tendency_value = mode_values.iloc[0]
+            return 'continuous'
+    
+    # Main distribution fitting method
+    def _fit_distribution(self, x_df):     
+        # High level distribution test
+        if self.high_level_distribution(x_df) == 'discrete':
+            best_distribution = "discrete"
+            unique_values, counts = np.unique(x_df, return_counts=True)
+            most_common_value = unique_values[np.argmax(counts)]
+
+            if len(unique_values) == 1:
+                central_tendency = "constant"  # All values are the same
+
+            if len(unique_values) == len(x_df):
+                central_tendency = "median"  # All unique values, likely skewed
+            
+            if counts[unique_values == most_common_value] >= (len(x_df) / 2):
+                central_tendency = "mode"  # Mode is most frequent for more than half of the data
+
+            central_tendency = "median"  # Default to median for general cases
+           
+            if central_tendency == 'mean':
+                central_tendency_value = x_df.mean()
+            elif central_tendency == 'median':
+                central_tendency_value = x_df.median()
+            elif central_tendency == 'mode':
+                mode_values = x_df.mode()
+                central_tendency_value = mode_values.iloc[0]
+            else:
+                central_tendency_value =  x_df.iloc[0]
+
+            # NaN fix in case that count for True and False are the same
+            if np.isnan(central_tendency_value):
+                if x_df.dtype == bool:
+                    central_tendency_value = True
+                else:
+                    central_tendency_value = 1
+                
+            # Check if the data resembles integers and round it if so.
+            is_integer_column = x_df.apply(lambda x: int(x) == x if str(x).replace(".", "").isdigit() else False)
+
+            if is_integer_column.all():
+                central_tendency_value = round(central_tendency_value)
+
+        else:
+            # List of candidate continuous distributions to test
+            '''
+                Distributions supported:
+                    - "norm",        # Normal distribution
+                    - "expon",       # Exponential distribution
+                    - "gamma",       # Gamma distribution
+                    - "dweibull", # Weibull distribution
+                    - "lognorm",     # Log-normal distribution
+                    - "pareto",      # Pareto distribution
+                    - "t",            # Student's t distribution
+                    - "beta",         # Beta distribution
+                    - "uniform",      # Uniform distribution
+                    - "loggamma"      # Log-Gamma distribution
+            '''
+            
+            # Initialize variables to store goodness of fit results
+            dfit = distfit(distr='popular')
+            
+            # Find best theoretical distribution for empirical x_df
+            dfit.fit_transform(x_df, verbose=0) #verbose=0
+            
+            min_index = dfit.summary['score'].idxmin()
+            best_distribution = dfit.summary.loc[min_index, 'name']
+
+            if best_distribution == 'norm':
+                central_tendency = 'mean'
+            elif best_distribution == 'expon':
+                central_tendency = 'median'
+            elif best_distribution == 'pareto':
+                    central_tendency = self._pareto_choose_central_tendency(x_df)
+            elif best_distribution == 'dweibull':
+                    central_tendency = self._dweibull_choose_central_tendency(x_df)
+            elif best_distribution == 't':
+                central_tendency = 'mean'
+            elif best_distribution == 'genextreme':
+                central_tendency = self._genextreme_choose_central_tendency(x_df)
+            elif best_distribution == 'gamma':
+                central_tendency = self._gamma_choose_central_tendency(x_df)
+            elif best_distribution == 'lognorm':
+                central_tendency = self._lognorm_choose_central_tendency(x_df)
+            elif best_distribution == 'beta':
+                central_tendency = self._beta_choose_central_tendency(x_df)
+            elif best_distribution == 'uniform':
+                central_tendency = self._uniform_choose_central_tendency(x_df)
+            elif best_distribution == 'loggamma':
+                central_tendency = self._loggamma_choose_central_tendency(x_df)
+        
+            if central_tendency == 'mean':
+                central_tendency_value = x_df.mean()
+            elif central_tendency == 'median':
+                central_tendency_value = x_df.median()
+            elif central_tendency == 'mode':
+                mode_values = x_df.mode()
+                central_tendency_value = mode_values.iloc[0]
+            else:
+                central_tendency_value =  x_df.iloc[0]
+        
         feature_distribution = [best_distribution, central_tendency, central_tendency_value]
         return feature_distribution

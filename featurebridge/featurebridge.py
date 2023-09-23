@@ -13,7 +13,7 @@ import pandas as pd
 import copy, time
 import matplotlib.pyplot as plt
 from itertools import combinations
-from featurebridge.utils import Utils
+from featurebridge.utils import Utils, _convert_to_dataframe
 
 # Define a class named FeatureBridge
 class FeatureBridge:
@@ -42,12 +42,11 @@ class FeatureBridge:
         self.accuracy_logic = accuracy_logic
         self.x_df = None  # Placeholder for feature data frame
         self.y_df = None  # Placeholder for target data frame
+        self.feature_distribution = None  # Placeholder for feature distribution statistics
         self.feature_importance = None  # Placeholder for basic feature importance
         self.corr_matrix = None  # Placeholder for the correlation matrix
         self.max_feature = None  # Placeholder for the most important feature
         self.max_index = None  # Placeholder for the index of the maximum feature importance
-        self.data_distribution = None  # Placeholder for data distribution statistics
-        self.feature_distribution = None  # Placeholder for feature distribution statistics
         self.model_map = None  # Placeholder for a mapping of features and models
         self.training_time = None
 
@@ -91,18 +90,19 @@ class FeatureBridge:
         Returns:
             None
         """
+        x_df = _convert_to_dataframe(x_df, 'dataframe') # Validate data type and convert it to pandas dataframe if needed.
+        y_df = _convert_to_dataframe(y_df, 'series') # Validate data type and convert it to pandas dataframe if needed.
 
         self.model = self.model.fit(x_df, y_df)
         self.x_df = x_df  # Assign the feature data frame
         self.y_df = y_df  # Assign the target data frame
-        self.feature_importance = self.calculate_importance()  # Calculate basic feature importance
+        self.feature_distribution = self._distribution()  # Calculate feature distribution statistics
+        self.feature_importance = self._calculate_importance()  # Calculate basic feature importance
         self.corr_matrix = self.x_df.corr()  # Calculate the correlation matrix
         self.max_feature = self.feature_importance.max()  # Find the most important feature
         self.max_index = self.feature_importance.idxmax()  # Find the index of the maximum feature importance
-        self.data_distribution = self.x_df.describe()  # Calculate data distribution statistics
-        self.feature_distribution = self.distribution()  # Calculate feature distribution statistics
-        self.model_map, self.training_time = self.model_mapping()  # Create a mapping of features and models
-        self.feature_mapping()
+        self.model_map, self.training_time = self._model_mapping()  # Create a mapping of features and models
+        self._feature_mapping()
 
     # Method to make predictions
     def predict(self, x_df):
@@ -119,8 +119,31 @@ class FeatureBridge:
         x_df = self.df_bridge(x_df)
         return self.model.predict(x_df)
 
+    def _get_model_coefficients(self):
+        """
+        Get coefficients or feature importances from a scikit-learn model.
+
+        Parameters:
+        - model: A trained scikit-learn model.
+        - feature_names: List of feature names (column names) for the input data.
+
+        Returns:
+        - Coefficients or feature importances.
+        """
+
+        if hasattr(self.model, 'coef_'):
+            # Linear models (Linear Regression, Logistic Regression, Linear SVM)
+            coefficients = self.model.coef_
+            return coefficients.ravel()
+        if hasattr(self.model, 'feature_importances_'):
+            # Tree-based models (Random Forest, Decision Tree)
+            feature_importances = self.model.feature_importances_
+            return feature_importances.ravel()
+
+        raise ValueError(f"Model type {type(self.model)} not recognized or supported.")
+    
     # Method to calculate feature importance
-    def calculate_importance(self):
+    def _calculate_importance(self):
         """
         Calculate the basic feature importance.
 
@@ -128,7 +151,13 @@ class FeatureBridge:
             Series: Feature importances.
         """
 
-        return np.abs(self.model.coef_ * self.x_df.mean())
+        # Create a new Series with the same columns as the original DataFrame
+        im_df = pd.Series('', index=self.x_df.columns)
+        for index_name in im_df.index:
+            # Use the data distribution to have better feature importance
+            im_df.at[index_name] = self.feature_distribution[index_name][2]
+
+        return np.abs(self._get_model_coefficients() * im_df)
 
     # Method to print feature importance scores
     def feature_importance_score(self):
@@ -138,12 +167,13 @@ class FeatureBridge:
         Returns:
             None
         """
+
         features_list = self.x_df.columns
         for i, v in enumerate(self.feature_importance):
             print('Feature: %s (%0d), Score: %.5f' % (features_list[i], i, v))
 
     # Method to determine feature distribution characteristics
-    def distribution(self):
+    def _distribution(self):
         """
         Determine the method for handling feature distribution based on data characteristics.
 
@@ -154,31 +184,12 @@ class FeatureBridge:
         feature_distribution = {}
         for feature in self.x_df.columns:
             # Check if data is binary (0 or 1)
-            feature_distribution[feature] = feature_distribution[feature] = self.utils.fit_distribution(self.x_df[feature])
-            unique_values = self.x_df[feature].unique()
-            if len(unique_values) == 2 and 0 in unique_values and 1 in unique_values:
-                if feature_distribution[feature][2] > 0.5:
-                    feature_distribution[feature][2] = 1
-                else:
-                    feature_distribution[feature][2] = 0
-            # Check if data is boolean (True or False)
-            elif self.x_df[feature].dtype == bool:
-                value_counts = self.x_df[feature].value_counts()
-                if value_counts[True] > value_counts[False]:
-                    feature_distribution[feature][2] = True
-                else:
-                    feature_distribution[feature][2] = False
-            else:
-                # Check if the data resembles integers
-                is_integer_column = self.x_df[feature].apply(lambda x: int(x) == x if str(x).replace(".", "").isdigit() else False)
-
-                if is_integer_column.all():
-                    feature_distribution[feature][2] = round(feature_distribution[feature][2])
+            feature_distribution[feature] = self.utils._fit_distribution(self.x_df[feature])
 
         return feature_distribution
 
     # Method to identify features to drop based on correlation
-    def drop_matrix(self, feature):
+    def _drop_matrix(self, feature):
         """
         Identify features to drop based on correlation with the specified feature.
 
@@ -198,7 +209,7 @@ class FeatureBridge:
         return drop_matrix.index.tolist()
 
     # Method to generate all combinations of features
-    def all_combinations(self, x_df):
+    def _all_combinations(self, x_df):
         """
         Generate all possible combinations of features.
 
@@ -216,7 +227,7 @@ class FeatureBridge:
         return all_combinations
 
     # Method to create a mapping of models for each feature
-    def model_mapping(self):
+    def _model_mapping(self):
         """
         Map models to features based on accuracy.
 
@@ -228,14 +239,14 @@ class FeatureBridge:
         model = copy.deepcopy(self.model)
         model_map = {}
         for feature in self.x_df.columns:
-            x_df = self.x_df.drop(self.drop_matrix(feature), axis=1)
+            x_df = self.x_df.drop(self._drop_matrix(feature), axis=1)
             y_df = self.x_df[feature].values.reshape(-1, 1)
             i = 0
             if len(x_df.columns) == 0:
                 model_map[feature] = {i: {'accuracy': None, 'distribution': self.feature_distribution[feature], 'features': None, 'model': None}}
                 continue
             model_map[feature] = {i: {'accuracy': None, 'distribution': self.feature_distribution[feature], 'features': None, 'model': None}}
-            combinations = self.all_combinations(x_df)
+            combinations = self._all_combinations(x_df)
             for combination in combinations:
                 combination = list(combination)
                 if len(combination) != len(x_df.columns):
@@ -244,7 +255,7 @@ class FeatureBridge:
                     break
                 model.fit(x_df_droped, y_df)
                 ypred = model.predict(x_df_droped)
-                acc = self.accuracy(y_df, ypred)
+                acc = 1 - self.accuracy(y_df, ypred)
                 if acc < self.min_accuracy:
                     if len(model_map[feature]) < 1:
                         del model_map[feature][i]
@@ -260,7 +271,7 @@ class FeatureBridge:
         return model_map, formatted_utc_time
 
     # Method to identify mandatory and deviation features
-    def mandatory_and_distribution(self):
+    def _mandatory_and_distribution(self):
         """
         Identify mandatory and deviation features based on importance.
 
@@ -282,7 +293,7 @@ class FeatureBridge:
             del self.model_map[feature]
 
     # Method to build the adaptive model
-    def adaptive_model(self):
+    def _adaptive_model(self):
         """
         Perform the build of adaptive model for feature prediction based on dependencies.
 
@@ -337,17 +348,26 @@ class FeatureBridge:
 
         print('Feature Sequence Dependencies:')
         print('Mandatory: (Must be provided by the user)')
-        for i in self.feature_map['mandatory']:
-            print(f' - Feature {i}')
+        if len(self.feature_map['mandatory']) == 0:
+            print(' - None')
+        else:
+            for i in self.feature_map['mandatory']:
+                print(f' - Feature {i}')
         print('\nData Distribution Method: (data distribution method will be used and not prediction)')
-        for i in self.feature_map['deviation']:
-            print(' - Feature {}, {}'.format(i, self.feature_map['deviation'][i]['distribution']))
+        if len(self.feature_map['deviation']) == 0:
+            print(' - None')
+        else:
+            for i in self.feature_map['deviation']:
+                print(' - Feature {}, {}'.format(i, self.feature_map['deviation'][i]['distribution']))
         print('\nPrediction by Adaptive Model: (will be predict by adaptiv model)')
-        for i in self.feature_map['adaptive']:
-            print(' - Feature {}, Dependencies: {}'.format(i, self.feature_map['adaptive'][i]['features']))
+        if len(self.feature_map['adaptive']) == 0:
+            print(' - None')
+        else:
+            for i in self.feature_map['adaptive']:
+                print(' - Feature {}, Dependencies: {}'.format(i, self.feature_map['adaptive'][i]['features']))
         print('\n')
 
-    def feature_mapping(self):
+    def _feature_mapping(self):
         """
         Perform feature mapping and selection.
 
@@ -359,8 +379,8 @@ class FeatureBridge:
                             'deviation': {},
                             'adaptive': {},
                             }
-        self.mandatory_and_distribution()
-        self.adaptive_model()
+        self._mandatory_and_distribution()
+        self._adaptive_model()
 
     # Method to calculate prediction accuracy
     def accuracy(self, y_df, ypred):
@@ -379,15 +399,17 @@ class FeatureBridge:
             y_sum = np.sum(y_df)
             margin = np.abs(np.subtract(ypred, y_df))
             error_sum = np.sum(margin)
-            accu = 1 - (error_sum / y_sum)
+            accu = error_sum / y_sum
             if accu < 0:
                 accu = 0
+            if accu > 1:
+                accu = 1
         else:
             accu = self.accuracy_logic(y_df, ypred)
         return accu
 
     # Method to predict using the adaptive model
-    def adaptive_predict(self, x_df, feature):
+    def _adaptive_predict(self, x_df, feature):
         """
         Make adaptive predictions for a specific feature.
 
@@ -435,11 +457,11 @@ class FeatureBridge:
         # Handling missing features with adaptive prediction
         for feature in self.feature_map['adaptive']:
             if feature not in x_df.columns:
-                x_df[feature] = self.adaptive_predict(x_df[self.feature_map['adaptive'][feature]['features']], feature)
+                x_df[feature] = self._adaptive_predict(x_df[self.feature_map['adaptive'][feature]['features']], feature)
             if x_df[feature].isna().any().any():
                 # pass  # TODO: Allow partial missing values for these features.
                 mask = x_df[feature].isna()
-                x_df.loc[mask, feature] = self.adaptive_predict(x_df.loc[mask][self.feature_map['adaptive'][feature]['features']], feature)
+                x_df.loc[mask, feature] = self._adaptive_predict(x_df.loc[mask][self.feature_map['adaptive'][feature]['features']], feature)
                 
         # Reorder columns to match the original data frame
         x_df = x_df.reindex(columns=self.x_df.columns)
@@ -460,39 +482,30 @@ class FeatureBridge:
         
         model = copy.deepcopy(self.model)
         ypred = model.predict(x_test_df)
-        main_acc = self.accuracy(y_text_df, ypred)
+        main_acc = 1 - self.accuracy(y_text_df, ypred)
         print('Non-FeatureBridge Model Accuracy: {}\n'.format(main_acc))
 
         acc_results = []
         test_results = []
         test_results.append(ypred)
 
-        print('Data Distribution Plot for FeatureBridge Pyramid:')
-        x_ax = range(len(test_results[0]))
-        for count, result in enumerate(test_results):
-            plt.plot(x_ax, result, linewidth=1, label=count)
-        plt.title("y-test and y-predicted data distribution")
-        plt.xlabel('X-axis')
-        plt.ylabel('Y-axis')
-        plt.legend(loc='best', fancybox=True, shadow=True)
-        plt.grid(True)
-        plt.show()
-
-        acc_results = []
-        test_results = []
         for feature in (list(self.feature_map['deviation'].keys()) + list(self.feature_map['adaptive'].keys())):
             xtest_x = x_test_df.drop(feature, axis=1)
             ypred = self.predict(xtest_x)
             test_results.append(ypred)
-            acc = self.accuracy(y_text_df, ypred)
+            acc = 1 - self.accuracy(y_text_df, ypred)
             acc_results.append(acc)
 
-        print("FeatureBridge feature accuracy impact for reference:\nThis shows the impact of each feature when it's missing\n---")
+        results = main_acc - acc_results
+        modified_results = [0 if x < 0 else x for x in results]
+
+        print("FeatureBridge feature accuracy impact:\nThis shows the impact of each feature when it's missing\n(Higher % number means higher impact in %)")
         features = (list(self.feature_map['deviation'].keys()) + list(self.feature_map['adaptive'].keys()))
-        plt.bar(features, (acc_results - main_acc))
-        plt.xlabel('Feature')
-        plt.ylabel('Accuracy')
-        plt.title('Features and their accuracy related')
+        plt.figure(figsize=(len(self.feature_map)*3, 6))  # Adjust the width and height as needed
+        plt.bar(features, (modified_results))
+        plt.xlabel('Feature Name')
+        plt.ylabel('Accuracy Impact')
+        plt.title('Features and their accuracy impact in %')
         plt.show()
 
         print("FeatureBridge Performance Matrix:\nThis shows the performance of FeatureBridge, the average accuracy for every number of features missing.\n---")
@@ -514,13 +527,14 @@ class FeatureBridge:
                 xtest_x = x_test_df.drop(feature, axis=1)
                 ypred = self.predict(xtest_x)
                 test_results.append(ypred)
-                acc = self.accuracy(y_text_df, ypred)
+                acc = 1 - self.accuracy(y_text_df, ypred)
                 acc_results.append(acc)
             avg = sum(acc_results) / len(acc_results)
             main_accuracy.append(avg)
             print('Average FeatureBridge accuracy with {} missing features: {}'.format(r, avg))
 
         x_bx = range(1, len(main_accuracy) + 1)
+        plt.figure(figsize=(len(self.feature_map)*3, 6))  # Adjust the width and height as needed
         plt.plot(x_bx, main_accuracy, linewidth=1, label='accuracy')
         plt.title("accuracy by number of missing features")
         plt.xlabel('Number of missing features')
