@@ -56,7 +56,7 @@ social-network-links:
   github: iNetanel
 # twitter: daattali
 # patreon: DeanAttali
-  youtube: c/daattali
+# youtube: c/daattali
 #  medium: yourname
 #  reddit: yourname
   linkedin: inetanel
@@ -89,8 +89,8 @@ social-network-links:
 
 # Select which social network share links to show in posts
 share-links-active:
-  twitter: true
-  facebook: true
+  twitter: false
+  facebook: false
   linkedin: true
   vk: false
 
@@ -284,7 +284,6 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - LICENSE
-  - README.md
   - screenshot.png
   - docs/
 
