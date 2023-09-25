@@ -24,7 +24,7 @@ CORRELATION_THRESHOLD = 0.25
 MIN_ACCURACY = 0.5
 DEFAULT_ACCURACY_SELECTION = 0.95
 IMPORTANCE_THRESHOLD = 0.1
-ACCURACY_LOGIC = None
+ACCURACY_LOGIC = _mean_absolute_percentage_error
 FEATURE_ENGINEERING = []
 
 
@@ -95,7 +95,7 @@ class FeatureBridge:
             - Minimum Accuracy = {self.min_accuracy}
             - Default Accuracy Selection = {self.default_accuracy_selection}
             - Importance Threshold = {self.importance_threshold}
-            - Accuracy Logic = {self._accuracy_logic}
+            - Accuracy Logic = {self.accuracy_logic}
          - Model:
             - Trained = {self.model_map is not None}
             - Training UTC Time = {self.training_time}
@@ -350,7 +350,7 @@ class FeatureBridge:
                         break
                     model.fit(x_df_droped, y_df)
                     ypred = model.predict(x_df_droped)
-                    acc = 1 - self._accuracy(y_df, ypred)
+                    acc = 1 - self.accuracy_logic(y_df, ypred)
                     if acc < self.min_accuracy:
                         if len(model_map[feature]) < 1:
                             del model_map[feature][i]
@@ -564,32 +564,6 @@ class FeatureBridge:
         self._mandatory_and_distribution()
         self._adaptive_model()
 
-    # Method to calculate prediction accuracy
-    def _accuracy(self, y_df, ypred):
-        """
-        Calculate prediction accuracy.
-
-        Parameters:
-            y_df (Series or array-like): The true target variable values.
-            ypred (array): The predicted target variable values.
-
-        Returns:
-            float: Prediction accuracy.
-        """
-
-        if self.accuracy_logic is None:
-            y_sum = np.sum(y_df)
-            margin = np.abs(np.subtract(ypred, y_df))
-            error_sum = np.sum(margin)
-            accu = error_sum / y_sum
-            if accu < 0:
-                accu = 0
-            if accu > 1:
-                accu = 1
-        else:
-            accu = self.accuracy_logic(y_df, ypred)
-        return accu
-
     # Method to predict using the adaptive model
     def _adaptive_predict(self, x_df, feature):
         """
@@ -679,7 +653,7 @@ class FeatureBridge:
 
         model = copy.deepcopy(self.model)
         ypred = model.predict(x_test_df)
-        main_acc = 1 - self._accuracy(y_text_df, ypred)
+        main_acc = 1 - self.accuracy_logic(y_text_df, ypred)
         print("Non-FeatureBridge Model Accuracy: {}\n".format(main_acc))
 
         acc_results = []
@@ -692,7 +666,7 @@ class FeatureBridge:
             xtest_x = x_test_df.drop(feature, axis=1)
             ypred = self.predict(xtest_x)
             test_results.append(ypred)
-            acc = 1 - self._accuracy(y_text_df, ypred)
+            acc = 1 - self.accuracy_logic(y_text_df, ypred)
             acc_results.append(acc)
 
         results = main_acc - acc_results
@@ -736,7 +710,7 @@ class FeatureBridge:
                 xtest_x = x_test_df.drop(feature, axis=1)
                 ypred = self.predict(xtest_x)
                 test_results.append(ypred)
-                acc = 1 - self._accuracy(y_text_df, ypred)
+                acc = 1 - self.accuracy_logic(y_text_df, ypred)
                 acc_results.append(acc)
             avg = sum(acc_results) / len(acc_results)
             main_accuracy.append(avg)
