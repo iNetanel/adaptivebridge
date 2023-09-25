@@ -1,13 +1,13 @@
 #!/bin/env python
 # featurebridge/utils/__init__.py
 
-'''
+"""
     Package Name: FeatureBridge
     Author: Netanel Eliav
     Author Email: inetanel@me.com
     License: MIT License
     Version: Please refer to the repository for the latest version and updates.
-'''
+"""
 
 # Import FeatureBridge methods and helpers
 from ._data_distribution import (
@@ -27,6 +27,6 @@ from ._error_handler import (
 __all__ = [
     "_fit_distribution",
     "_convert_to_dataframe",
-    'MandatoryFeatureError',
-    'EngineeringFeatureError',
+    "MandatoryFeatureError",
+    "EngineeringFeatureError",
 ]
