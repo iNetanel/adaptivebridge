@@ -16,7 +16,7 @@ import copy, time
 import matplotlib.pyplot as plt
 from itertools import combinations
 
-# Import FeatureBridge methods
+# Import FeatureBridge methods and utils
 from .utils import *
 
 # Default values for FeatureBridge
@@ -46,22 +46,23 @@ class FeatureBridge:
             None
         """
 
+        self.model = copy.deepcopy(model)  # Create a deep copy of the provided machine learning model
         self.correlation_threshold = correlation_threshold
         self.min_accuracy = min_accuracy
         self.importance_threshold = importance_threshold
         self.default_accuracy_selection = default_accuracy_selection
-        self.model = copy.deepcopy(model)  # Create a deep copy of the provided machine learning model
         self.accuracy_logic = accuracy_logic
-        self.feature_engineering = None
+        self.feature_engineering = None  # Placeholder for feature-enginnering list
         self.x_df = None  # Placeholder for feature data frame
         self.y_df = None  # Placeholder for target data frame
+        self.x_df_columns = None # Placeholder for feature data frame columns (for order set in the future)
         self.feature_distribution = None  # Placeholder for feature distribution statistics
         self.feature_importance = None  # Placeholder for basic feature importance
         self.corr_matrix = None  # Placeholder for the correlation matrix
         self.max_feature = None  # Placeholder for the most important feature
         self.max_index = None  # Placeholder for the index of the maximum feature importance
         self.model_map = None  # Placeholder for a mapping of features and models
-        self.training_time = None
+        self.training_time = None # Placeholder for a training time
     
     # Define a string representation for the class
     def __str__(self):
@@ -71,6 +72,7 @@ class FeatureBridge:
         Returns:
             FeatureBridge internal information
         """
+
         message = f'''
         FeatureBridge Class:
          - Parameters:
@@ -99,6 +101,7 @@ class FeatureBridge:
         Returns:
             None
         """
+    
         self.feature_engineering = feature_engineering
         for feature in self.feature_engineering:
             if feature not in x_df.columns:
@@ -113,6 +116,7 @@ class FeatureBridge:
         self.model = self.model.fit(x_df, y_df)
         self.x_df = x_df  # Assign the feature data frame
         self.y_df = y_df  # Assign the target data frame
+        self.x_df_columns = self.x_df.columns # Assign the feature data frame columns list (for future use)
         self.feature_distribution = self._distribution()  # Calculate feature distribution statistics
         self.feature_importance = self._calculate_importance()  # Calculate basic feature importance
         self.corr_matrix = self.x_df.corr()  # Calculate the correlation matrix
@@ -120,6 +124,10 @@ class FeatureBridge:
         self.max_index = self.feature_importance.idxmax()  # Find the index of the maximum feature importance
         self.model_map, self.training_time = self._model_mapping()  # Create a mapping of features and models
         self._feature_mapping()
+        
+        # Reset variables
+        self.x_df = None
+        self.y_df = None
 
     # Method to make predictions
     def predict(self, x_df):
@@ -506,7 +514,7 @@ class FeatureBridge:
                 x_df.loc[mask, feature] = self._adaptive_predict(x_df.loc[mask][self.feature_map['adaptive'][feature]['features']], feature)
                 
         # Reorder columns to match the original data frame
-        x_df = x_df.reindex(columns=self.x_df.columns)
+        x_df = x_df.reindex(columns=self.x_df_columns)
         return x_df
     
     # Method to benchmark the model

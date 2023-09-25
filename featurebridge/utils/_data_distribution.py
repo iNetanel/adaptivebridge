@@ -221,16 +221,16 @@ def _fit_distribution(x_df):
         # List of candidate continuous distributions to test
         '''
             Distributions supported:
-                - "norm",        # Normal distribution
-                - "expon",       # Exponential distribution
-                - "gamma",       # Gamma distribution
-                - "dweibull", # Weibull distribution
-                - "lognorm",     # Log-normal distribution
-                - "pareto",      # Pareto distribution
-                - "t",            # Student's t distribution
-                - "beta",         # Beta distribution
-                - "uniform",      # Uniform distribution
-                - "loggamma"      # Log-Gamma distribution
+                - "norm",       # Normal distribution
+                - "expon",      # Exponential distribution
+                - "gamma",      # Gamma distribution
+                - "dweibull",   # Weibull distribution
+                - "lognorm",    # Log-normal distribution
+                - "pareto",     # Pareto distribution
+                - "t",          # Student's t distribution
+                - "beta",       # Beta distribution
+                - "uniform",    # Uniform distribution
+                - "loggamma"    # Log-Gamma distribution
         '''
         
         # Initialize variables to store goodness of fit results
