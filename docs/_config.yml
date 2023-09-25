@@ -254,6 +254,7 @@ date_format: "%B %-d, %Y"
 # Output options (more information on Jekyll's site)
 timezone: "America/Toronto"
 markdown: kramdown
+markdown_ext: "md,dm,markdown"
 highlighter: rouge
 permalink: /:year-:month-:day-:title/
 paginate: 5
@@ -284,7 +285,6 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - LICENSE
-  - README.md
   - screenshot.png
   - docs/
 
