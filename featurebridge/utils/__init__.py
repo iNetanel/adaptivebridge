@@ -1,13 +1,9 @@
 #!/bin/env python
 # featurebridge/utils/__init__.py
-
-"""
-    Package Name: FeatureBridge
-    Author: Netanel Eliav
-    Author Email: inetanel@me.com
-    License: MIT License
-    Version: Please refer to the repository for the latest version and updates.
-"""
+__author__ = "Netanel Eliav"
+__email__ = "inetanel@me.com"
+__version__ = "1.0.0 alpha"
+__license__ = "MIT License"
 
 # Import FeatureBridge methods and helpers
 from ._metrics import (

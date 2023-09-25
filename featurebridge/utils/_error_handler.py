@@ -1,7 +1,7 @@
 #!/bin/env python
 # featurebridge/utils/_error_handler.py
 """
-    Project Name: FeatureBridge
+    Package Name: FeatureBridge
     Author: Netanel Eliav
     Author Email: inetanel@me.com
     License: MIT License

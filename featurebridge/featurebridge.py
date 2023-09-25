@@ -2,12 +2,12 @@
 # featurebridge/featurebridge.py
 """
     Package Name: FeatureBridge
-    File Name: featurebridge.py
     Author: Netanel Eliav
     Author Email: inetanel@me.com
     License: MIT License
     Version: Please refer to the repository for the latest version and updates.
 """
+
 
 # Import necessary libraries
 import numpy as np
