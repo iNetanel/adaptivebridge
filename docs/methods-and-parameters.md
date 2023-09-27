@@ -55,7 +55,7 @@ feature_bridge.fit(x_train, y_train)
 predictions = feature_bridge.predict(x_test)
 ```
 
-# Methods and Parameters
+## Methods
 ### Fitting FeatureBridge Adaptive Model
 After initialization, you can fit the adaptive model to your data using the fit method. Provide the feature data frame (`x_df`) and the target variable data (`y_df`) as parameters.
 ```python
