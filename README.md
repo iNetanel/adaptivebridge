@@ -48,6 +48,7 @@ Follow these steps to get started with FeatureBridge:
 
 - NumPy
 - Pandas
+- Distfit
 - Matplotlib
 
 ## Contribution
