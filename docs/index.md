@@ -1,6 +1,6 @@
 # FeatureBridge Documentation!
 
-![Project Image](/featurebridge/assets/logo.jpeg)
+![Project Image](/featurebridge/assets/images/logo.jpeg)
 
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/iNetanel/featurebridge)
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -8,10 +8,10 @@
 - **Project Name:** FeatureBridge
 - **License:** MIT License
 - **Author:** Netanel Eliav
-- **Author Website:** https://inetanel.com
-- **Author Email:** inetanel@me.com
-- **Documentation:** https://inetanel.github.io/featurebridge
-- **Issue Tracker:** https://github.com/iNetanel/featurebridge/issues
+- **Author Website:** [https://inetanel.com](https://inetanel.com)
+- **Author Email:** [inetanel@me.com](mailto:inetanel@me.com)
+- **Documentation:** [https://inetanel.github.io/featurebridge](https://inetanel.github.io/featurebridge)
+- **Issue Tracker:** [https://github.com/iNetanel/featurebridge/issues](https://github.com/iNetanel/featurebridge/issues)
 
 ---
 
@@ -46,19 +46,6 @@ With FeatureBridge, integrating this powerful tool into your AI and machine lear
 6. [Techniques and Algorithms](/featurebridge/techniques-and-algorithms.html)
 
 ---
-
-## Getting Started
-
-Follow these steps to get started with FeatureBridge:
-
-1. Clone this repository:
-
-   ```shell
-   pip install featurebridge
-
-   #OR
-   git clone https://github.com/iNetanel/featurebridge.git
-   pip install -r requirements.txt
    
 ## Dependencies 
 

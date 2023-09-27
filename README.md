@@ -8,10 +8,10 @@
 - **Project Name:** FeatureBridge
 - **License:** MIT License
 - **Author:** Netanel Eliav
-- **Author Website:** https://inetanel.com
-- **Author Email:** inetanel@me.com
-- **Documentation:** https://github.com/iNetanel/featurebridge/wiki
-- **Issue Tracker:** https://github.com/iNetanel/featurebridge/issues
+- **Author Website:** [https://inetanel.com](https://inetanel.com)
+- **Author Email:** [inetanel@me.com](mailto:inetanel@me.com)
+- **Documentation:** [https://inetanel.github.io/featurebridge](https://inetanel.github.io/featurebridge)
+- **Issue Tracker:** [https://github.com/iNetanel/featurebridge/issues](https://github.com/iNetanel/featurebridge/issues)
 
 
 ## Overview
