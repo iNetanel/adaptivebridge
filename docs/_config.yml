@@ -14,27 +14,25 @@ title: FeatureBridge's Documentation
 
 # Your name to show in the footer
 author: Netanel Eliav
-readme_index:
-  with_frontmatter: true
 
 plugins:
   - jemoji
   - jekyll-avatar
   - jekyll-mentions
 
-exclude:
-  - Makefile
-  - CNAME
-  - LICENSE
-  - update.sh
-  - Gemfile
-  - Gemfile.lock
-  - requirements.txt
-  - node_modules
-  - package.json
-  - package-lock.json
-  - webpack.config.js
-  - jekyll-rtd-theme.gemspec
+# exclude:
+#   - Makefile
+#   - CNAME
+#   - LICENSE
+#   - update.sh
+#   - Gemfile
+#   - Gemfile.lock
+#   - requirements.txt
+#   - node_modules
+#   - package.json
+#   - package-lock.json
+#   - webpack.config.js
+#   - jekyll-rtd-theme.gemspec
 ###############################################
 # --- List of links in the navigation bar --- #
 ###############################################
@@ -70,16 +68,16 @@ exclude:
 # You can change the order that they show up on the page by changing the order here.
 # Uncomment the links you want to show and add your information to each one.
 # social-network-links:
-  email: "inetanel@me.com"
+  # email: "inetanel@me.com"
 # rss: true  # remove this line if you don't want to show an RSS link at the bottom
 # facebook: deanattali
-  github: iNetanel
+  # github: iNetanel
 # twitter: daattali
 # patreon: DeanAttali
 # youtube: c/daattali
 #  medium: yourname
 #  reddit: yourname
-  linkedin: inetanel
+  # linkedin: inetanel
 #  xing: yourname
 #  stackoverflow: "3943160/daattali"
 #  snapchat: deanat78
