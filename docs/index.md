@@ -41,10 +41,9 @@ With FeatureBridge, integrating this powerful tool into your AI and machine lear
 1. [Getting Started](/featurebridge/getting-started.html)
 2. [Installation](/featurebridge/Installation.html)
 3. [Initialization](/featurebridge/initialization.html)
-4. [Parameters](/featurebridge/parameters.html)
-5. [Methods](/methods.html)
-6. [Performance and Benchmark](/featurebridge/performance-and-benchmark.html)
-7. [Techniques and Algorithms](/featurebridge/techniques-and-algorithms.html)
+4. [Methods and Parameters](/featurebridge/methods-and-parameters.html)
+5. [Performance and Benchmark](/featurebridge/performance-and-benchmark.html)
+6. [Techniques and Algorithms](/featurebridge/techniques-and-algorithms.html)
 
 ---
 
