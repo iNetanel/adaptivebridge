@@ -1,7 +1,7 @@
 # Methods and Parameters
 ## Parameters
 ### `model`:
-The model parameter is according to what was previously mentioned: [Initialization](#initialization)
+The model parameter is according to what was previously mentioned: [Initialization](/featurebridge/getting-started.html#initialization)
 
 ### `correlation_threshold`:
 The correlation_threshold parameter needs to be set by the user (`default=0.25`).
