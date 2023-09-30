@@ -1,4 +1,4 @@
-# FeatureBridge Documentation!
+# FeatureBridge Documentation
 
 ![Project Image](/featurebridge/assets/images/logo.jpeg)
 
@@ -46,8 +46,8 @@ With FeatureBridge, integrating this powerful tool into your AI and machine lear
 6. [Techniques and Algorithms](/featurebridge/techniques-and-algorithms.html)
 
 ---
-   
-## Dependencies 
+
+## Dependencies
 
 - NumPy
 - Pandas

@@ -639,13 +639,13 @@ class FeatureBridge:
         return x_df
 
     # Method to benchmark the model
-    def benchmark(self, x_test_df, y_text_df):
+    def benchmark(self, x_test_df, y_test_df):
         """
         Evaluate the model's performance and impact of feature selection.
 
         Parameters:
             x_test_df (DataFrame): The feature data frame.
-            y_text_df (DataFrame): The target data frame.
+            y_test_df (DataFrame): The target data frame.
 
         Returns:
             None
@@ -653,7 +653,7 @@ class FeatureBridge:
 
         model = copy.deepcopy(self.model)
         ypred = model.predict(x_test_df)
-        main_acc = 1 - self.accuracy_logic(y_text_df, ypred)
+        main_acc = 1 - self.accuracy_logic(y_test_df, ypred)
         print("Non-FeatureBridge Model Accuracy: {}\n".format(main_acc))
 
         acc_results = []
@@ -666,7 +666,7 @@ class FeatureBridge:
             xtest_x = x_test_df.drop(feature, axis=1)
             ypred = self.predict(xtest_x)
             test_results.append(ypred)
-            acc = 1 - self.accuracy_logic(y_text_df, ypred)
+            acc = 1 - self.accuracy_logic(y_test_df, ypred)
             acc_results.append(acc)
 
         results = main_acc - acc_results
@@ -710,7 +710,7 @@ class FeatureBridge:
                 xtest_x = x_test_df.drop(feature, axis=1)
                 ypred = self.predict(xtest_x)
                 test_results.append(ypred)
-                acc = 1 - self.accuracy_logic(y_text_df, ypred)
+                acc = 1 - self.accuracy_logic(y_test_df, ypred)
                 acc_results.append(acc)
             avg = sum(acc_results) / len(acc_results)
             main_accuracy.append(avg)

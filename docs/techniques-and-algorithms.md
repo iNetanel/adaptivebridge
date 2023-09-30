@@ -23,4 +23,5 @@ The impact of a feature reflects its actual contribution to predictions. This im
 2. **Portion of Prediction Value:** The contribution of a feature to the prediction can be calculated by multiplying its weight (w) by the feature's value. For instance, if w = 0.5 and x = 100, the feature contributes 50 to the prediction. If the prediction (y) is 500, this feature has a 10% impact on the final prediction.
 
 By using magnitude (w), and impact only, we are calculating the feature's importance and effectiveness.
-The feature's importance can be accessed by the instance variable `FeatureBridge.feature_importance_score()`
+
+The feature's importance can be accessed by the instance variable `FeatureBridge.feature_importance_score()`.

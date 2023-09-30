@@ -1,42 +1,41 @@
 # Methods and Parameters
+
 ## Parameters
+
 ### `model`
-The model parameter is according to what was previously mentioned: [Initialization](/featurebridge/getting-started.html#initialization)
 
-### correlation_threshold
-The `correlation_threshold` parameter needs to be set by the user (`default=0.25`).
-The parameter set to FeatureBridge is the threshold for the decision in model selection. It means that a higher threshold means more features will not be used Data Distribution method when the Adaptive model is not able to predict, this will make more features mandatory.
+The `model` parameter is in accordance with what was previously mentioned in the [Initialization](/featurebridge/getting-started.html#initialization) section.
 
-A lower threshold will impact the fit performance but it will lower the cases when features are mandatory.
+### `correlation_threshold`
 
-### min_accuracy
-The `min_accuracy` is a parameter that needs to be set by the user (`default=0.5`).
-It sets the minimum accuracy of adaptive model prediction to predict a feature (if missing), if a model cannot predict a feature with higher accuracy than the min_accuracy, it will be set as mandatory.
+The `correlation_threshold` parameter needs to be set by the user (`default=0.25`). This parameter, when set in FeatureBridge, serves as the threshold for decision-making in model selection. A higher threshold implies that more features will not be used by the Data Distribution method when the Adaptive model is unable to predict, making more features mandatory.
 
-This means that higher `min_accuracy` will lead to more features that are mandatory and cannot be missing.
-Please note: min_accuracy is not the overall accuracy by the FeatureBridge, it's a decision parameter only. please use the `benchmark` method for general accuracy.
+Conversely, a lower threshold impacts the fitting performance but decreases the cases where features become mandatory.
 
-### default_accuracy_selection
-The `default_accuracy_selection` is a parameter that needs to be set by the user (`default=0.95`).
-It sets the break point for satisfactory accuracy of adaptive model prediction to predict a feature (if missing), if a model is reaching default_accuracy_selection or higher in accuracy it will stop and break the fitting for that feature.
+### `min_accuracy`
 
-A lower `default_accuracy_selection` will lead to lower training time.
+The `min_accuracy` is a parameter that needs to be set by the user (`default=0.5`). It establishes the minimum accuracy required for the Adaptive model's prediction to consider a feature (if missing). If a model cannot predict a feature with higher accuracy than the `min_accuracy`, it will be designated as mandatory.
 
-### importance_threshold
-The `importance_threshold` is a parameter that needs to be set by the user (`default=0.1`).
-The parameter sets the threshold to FeatureBridge for the feature sequence dependencies. It means that a higher `importance_threshold` will lead to more mandatory features. It will tell FeatureBridge that this feature is important enough and that using the Data Distribution method is not satisfactory.
+Higher values for `min_accuracy` lead to more mandatory features that cannot be missing. It's essential to note that `min_accuracy` is not the overall accuracy provided by FeatureBridge but a decision parameter only. You can use the `benchmark` method to evaluate general accuracy.
 
-### accuracy_logic
-The `accuracy_logic` is a parameter that it's optional to be set by the user (`default=None`), when None will use the default accuracy method that it's [Mean Absolute Percentage Error](https://en.wikipedia.org/wiki/Mean_absolute_percentage_error). 
-FeatureBridge allows for customization through the custom accuracy calculation logic (`accuracy_logic`), the accuracy logic method will affect many calculations and algorithms within FeatureBridge, from feature selection, to the accuracy of the Adaptive model by using the `benchmark` method.
+### `default_accuracy_selection`
 
-You can define a custom function to calculate prediction accuracy.
-Examples are: `mean_squared_error`, `r2_score`, and `mean_absolute_percentage_error` by sklearn.
-Please note, `mean_absolute_percentage_error` and `mean_squared_error` need adjustments to be (1-mean_absolute_percentage_error), please use the custom to tune the sklearn method. We recommend to use `r2_score` or `None`.
+The `default_accuracy_selection` is another parameter to be set by the user (`default=0.95`). It sets the threshold for acceptable accuracy of the Adaptive model's prediction for a feature (if missing). When a model achieves accuracy equal to or higher than `default_accuracy_selection`, it will halt the fitting process for that feature.
 
-You can have any custom method.
+A lower `default_accuracy_selection` reduces training time.
 
-See below how to implement custom logic:
+### `importance_threshold`
+
+The `importance_threshold` is a parameter that needs to be set by the user (`default=0.1`). This parameter dictates the threshold for FeatureBridge regarding feature sequence dependencies. A higher `importance_threshold` designates more features as mandatory, indicating that these features are crucial, and using the Data Distribution method is insufficient.
+
+### `accuracy_logic`
+
+The `accuracy_logic` parameter is optional and can be set by the user (`default=None`). When set to `None`, FeatureBridge uses the default accuracy method, which is [Mean Absolute Percentage Error](https://en.wikipedia.org/wiki/Mean_absolute_percentage_error). However, FeatureBridge offers flexibility through custom accuracy calculation logic (`accuracy_logic`). This user-defined accuracy logic impacts various calculations and algorithms within FeatureBridge, including feature selection and the accuracy of the Adaptive model when using the `benchmark` method.
+
+You can define a custom function to calculate prediction accuracy, such as `mean_squared_error`, `r2_score`, or `mean_absolute_percentage_error` from sklearn. Note that `mean_absolute_percentage_error` and `mean_squared_error` require adjustments to (1 - mean_absolute_percentage_error) to function correctly. It is recommended to use `r2_score` or `None`.
+
+Here's an example of implementing custom logic:
+
 ```python
 # Example 1: Feature selection and model fitting
 feature_bridge = FeatureBridge(model=LinearRegression())
@@ -47,40 +46,49 @@ predictions = feature_bridge.predict(x_test)
 
 # Example 3: Custom accuracy logic
 def custom_accuracy(y_true, y_pred):
-    # Define your custom accuracy calculation here
-    pass
+    # Define your custom accuracy calculation here with the result as % error
+    return result
 
 feature_bridge = FeatureBridge(model=LinearRegression(), accuracy_logic=custom_accuracy)
 feature_bridge.fit(x_train, y_train)
 predictions = feature_bridge.predict(x_test)
 ```
 
-## Methods
+### Methods
+
 ### Fitting FeatureBridge Adaptive Model
-After initialization, you can fit the adaptive model to your data using the fit method. Provide the feature data frame (`x_df`) and the target variable data (`y_df`) as parameters.
+
+After initialization, you can fit the adaptive model to your data using the `fit` method. Provide the feature data frame (`x_df`) and the target variable data (`y_df`) as parameters.
+
 ```python
 # Fit the model
 feature_bridge.fit(x_df, y_df)
 ```
 
 ### Making Predictions
-Once the model is fitted, you can make predictions using the `.predict` method. Provide the feature data frame for prediction (`x_df`) as a parameter.
+
+Once the model is fitted, predictions can be made using the `.predict` method. Provide the feature data frame for prediction (`x_df`) as a parameter.
 ```python
 # Make predictions
 predictions = feature_bridge.predict(x_df)
+
 ```
 
 ### Complete and Bridge a DataFrame
-Although it's part of the prediction process method, you can choose only to predict missing values and features in a dataset and to have a completely new data frame (dataset) without missing values by using the `.df_bridge` method. Provide the feature data frame to complete (`x_df`) as a parameter.
+
+Although part of the prediction process, you can choose only to predict missing values and features in a dataset and obtain a completely new data frame (dataset) without missing values using the `.bridge` method. Provide the feature data frame to complete (`x_df`) as a parameter.
 ```python
 # Complete data frame (dataset)
-complete_x_df = feature_bridge.df_bridge(x_df)
+complete_x_df = feature_bridge.bridge(x_df)
+
 ```
 
 ### Feature Importance
-Feature importance can be assessed using the `feature_importance_score` method, which summarizes the feature importance scores.
+
+The importance of features can be assessed using the `feature_importance_score` method, which summarizes the feature importance scores.
 ```python
 feature_bridge.feature_importance_score()
+
 ```
 
 Output Example:
@@ -98,19 +106,18 @@ Feature: tax (9), Score: 5.03544
 Feature: ptratio (10), Score: 17.58346
 Feature: b (11), Score: 3.32124
 Feature: lstat (12), Score: 6.63980
-```
 
-The above example shows the feature's importance **not in** percentage but by absolute value,
-in our example, Feature rm (5) is providing an absolute value of 23.94 to the prediction target.
+```
+The above example shows the feature's importance **not in**  percentage but by absolute value.
+In our example, Feature rm (5) is providing an absolute value of 23.94 to the prediction target.
 
 ### Feature Sequence Dependencies
-Feature Sequence Selection is a crucial aspect of FeatureBridge. It automatically identifies mandatory features, and methods to handle deviations in data distribution, and creates predictive models for features. The process involves the following steps:
+Feature Sequence Selection is a crucial aspect of FeatureBridge. It automatically identifies mandatory features and methods to handle deviations in data distribution, and creates predictive models for features. The process involves the following steps:
 
 - Identifying mandatory and deviation features.
 - Performing feature sequence based on dependencies.
 
 Feature Sequence Dependencies can be displayed by the `feature_sequence` method that will print the features sequence, dependencies, and their handling methods.
-
 ```python
 feature_bridge.feature_sequence()
 ```
@@ -118,6 +125,9 @@ feature_bridge.feature_sequence()
 Output Example:
 ```
 Feature Sequence Dependencies:
+User-defined feature-engineering features: (Must be provided by the user)
+ - None
+
 Mandatory: (Must be provided by the user)
  - Feature crim
  - Feature zn
@@ -125,7 +135,7 @@ Mandatory: (Must be provided by the user)
 Data Distribution Method: (data distribution method will be used and not prediction)
  - Feature chas, 0
 
-Prediction by Adaptive Model: (will be predicted by adaptive model)
+Prediction by Adaptive Model: (will be predicted by the adaptive model)
  - Feature rm, Dependencies: ['zn']
  - Feature ptratio, Dependencies: ['crim', 'zn', 'rm']
  - Feature nox, Dependencies: ['crim', 'zn', 'rm']
@@ -136,50 +146,25 @@ Prediction by Adaptive Model: (will be predicted by adaptive model)
  - Feature indus, Dependencies: ['crim', 'zn', 'nox', 'rm', 'dis', 'tax', 'b']
  - Feature lstat, Dependencies: ['crim', 'zn', 'industry', 'rm', 'age', 'tax', 'b']
  - Feature rad, Dependencies: ['crim', 'zn', 'industry', 'nox', 'age', 'tax', 'ptratio', 'b']
-```
 
-The above example shows the features `crim` and `zn` are mandatory, this means they will have to be provided to be able to predict the target.
-The example also shows that the feature `chas ` will be completed and predicted using one of the data distribution methods, this means the feature will be given a value (when missing) based on the data distribution, in the example case, it getting `0` because this feature is bool and the mean is below 0.5.
-The above example shows the rest of the features and their dependency structure and sequence, in general, it shows how each feature is dependent on other features. the list is short by the sequence. you can see that feature `rm` will be used for feature `zn` for the adaptive model and to be predicted. Feature `ptratio` will use more features, including `rm`, that is why it will be the second feature that will be predicted in case both features `rm` and `ptratio' are missing.
+```
+The above example shows the features `crim` and `zn` are mandatory, meaning they must be provided to predict the target.
+The example also shows that the feature `chas` will be completed and predicted using one of the data distribution methods. This means the feature will be given a value (when missing) based on the data distribution. In the example case, it gets `0` because this feature is Boolean and the mean is below `0.5`. The above example shows the rest of the features and their dependency structure and sequence, in general, it shows how each feature is dependent on other features. The list is sorted by the sequence. You can see that feature rm will be used for feature `zn` in the adaptive model and will be predicted. Feature `ptratio` will use more features, including `rm`, which is why it will be the second feature predicted in case both features `rm` and `ptratio` are missing. You can also see that User-defined feature-engineering is None because no feature was declared.
 
 ### Benchmark
-Benchmark is a very important step for FeatureBridge.the method will allow you to check every aspect of FeatureBridge's structure, performance, and accuracy.
-
+Benchmarking is a crucial step for FeatureBridge. This method allows you to evaluate every aspect of FeatureBridge's structure, performance, and accuracy.
 ```python
-feature_bridge.benchmark(x_test_df, y_text_df)
+feature_bridge.benchmark(x_test_df, y_test_df)
+
 ```
 
-Here is some key information that the benchmark will provide:
+Here is some key information that the benchmark provides:
 
 **Non-FeatureBridge Model Accuracy:**
 This shows the non-FeatureBridge model accuracy.
 ```bash
 Non-FeatureBridge Model Accuracy: 0.8808579769328666`
 ```
-
-**FeatureBridge Pyramid Accuracy:**
-This shows the accuracy when features are missing, one by one and accordingly to the dependency.
-```bash
-FeatureBridge Pyramid Accuracy:
--- 0.8522360668910814 Accuracy -- when ['crim'] was missing
--- 0.840728799573311 Accuracy -- when ['crim', 'zn'] was missing
--- 0.8438389851603283 Accuracy -- when ['crim', 'zn', 'chas'] was missing
--- 0.7984019354988106 Accuracy -- when ['crim', 'zn', 'chas', 'rm'] was missing
--- 0.7663155541581351 Accuracy -- when ['crim', 'zn', 'chas', 'rm', 'ptratio'] was missing
--- 0.7122044681450528 Accuracy -- when ['crim', 'zn', 'chas', 'rm', 'ptratio', 'nox'] was missing
--- 0.699574698659302 Accuracy -- when ['crim', 'zn', 'chas', 'rm', 'ptratio', 'nox', 'b'] was missing
--- 0.6453239701475657 Accuracy -- when ['crim', 'zn', 'chas', 'rm', 'ptratio', 'nox', 'b', 'tax'] was missing
--- 0.6459538116331353 Accuracy -- when ['crim', 'zn', 'chas', 'rm', 'ptratio', 'nox', 'b', 'tax', 'age'] was missing
--- 0.7176847838906694 Accuracy -- when ['crim', 'zn', 'chas', 'rm', 'ptratio', 'nox', 'b', 'tax', 'age', 'dis'] was missing
--- 0.7208448622936061 Accuracy -- when ['crim', 'zn', 'chas', 'rm', 'ptratio', 'nox', 'b', 'tax', 'age', 'dis', 'indus'] was missing
--- 0.6137469459180667 Accuracy -- when ['crim', 'zn', 'chas', 'rm', 'ptratio', 'nox', 'b', 'tax', 'age', 'dis', 'indus', 'lstat'] was missing
--- 0.665067094620444 Accuracy -- when ['crim', 'zn', 'chas', 'rm', 'ptratio', 'nox', 'b', 'tax', 'age', 'dis', 'indus', 'lstat', 'rad'] was missing
-```
-
-****- A Data Distribution Plot for FeatureBridge Pyramid:****
-This shows the data plot when features are missing, by the Pyramid sequence.
-
-![1a3d16c0-b901-4ef0-859f-e332a1e82828](https://github.com/iNetanel/featurebridge/assets/69385881/10b716c9-9f4f-46ee-9998-2a7a3bd917fc)
 
 FeatureBridge Features Accuracy Impact:
 This shows the impact of each feature when it's missing.
@@ -208,4 +193,4 @@ Average FeatureBridge accuracy with 12 missing features: 0.7077357069383757
 ```
 ![9ba30d77-8557-4cb0-91fe-7ad0a95be5ce](https://github.com/iNetanel/featurebridge/assets/69385881/ebcab62f-6de7-467b-8ae5-921312bca9b0)
 
-The performance of FeatureBridge should be according to the **FeatureBridge performance Matrix** ONLY.
+The performance of FeatureBridge should be according to the **FeatureBridge Performance Matrix** ONLY.
