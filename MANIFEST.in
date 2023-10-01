@@ -1,0 +1,7 @@
+# Exclude files and directories specified in .gitignore
+exclude .gitignore
+exclude .git/
+exclude .gitignore
+exclude data/
+exclude notebooks/
+exclude workspace/

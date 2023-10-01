@@ -1,6 +1,8 @@
-# AdaptiveBridge
-
-![AdaptiveBridge Logo](https://github.com/inetanel/adaptivebridge/main/docs/assets/images/logo.jpeg)
+<p align="center">
+  <a href="https://inetanel.github.io/adaptivebridge">
+  <img src="https://github.com/inetanel/adaptivebridge/main/docs/assets/images/wide_logo.jpeg" width="600" />
+  </a>
+</p>
 
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/inetanel/adaptivebridge)
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -37,12 +39,12 @@ Follow these steps to get started with AdaptiveBridge:
 
 1. Clone this repository:
 
-   ```shell
+   ```bash
    pip install adaptivebridge
    
    ```
 
-   ```shell
+   ```bash
    # Alternatively 
    git clone https://github.com/inetanel/adaptivebridge.git
    pip install -r requirements.txt

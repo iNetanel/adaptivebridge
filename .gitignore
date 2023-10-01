@@ -158,8 +158,6 @@ cython_debug/
 
 # Jupyter
 *.ipynb
-MANIFEST.in
-setup.py
 
 #MacOS
 .DS_Store

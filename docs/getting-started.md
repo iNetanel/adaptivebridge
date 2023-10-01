@@ -11,7 +11,7 @@ pip install adaptivebridge
 
 Alternatively, you can install AdaptiveBridge directly from the source code.
 Download the package and navigate to the folder:
-```shell
+```bash
    git clone https://github.com/inetanel/adaptivebridge.git
    pip install -r requirements.txt
 
