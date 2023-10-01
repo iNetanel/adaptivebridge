@@ -25,7 +25,7 @@ def _pareto_choose_central_tendency(x_df):
     mode_pareto = scale if shape > 1 else np.nan
 
     if np.isnan(mode_pareto):
-        # Data may not have a well-defined mode for certain parameter combinations, so use mean or median
+        # Data may not have a well-defined mode for certain parameter so use mean or median
         return "mean" if mean_pareto <= median_pareto else "median"
     # Choose the method based on the mode and other central tendency measures
     if mean_pareto <= median_pareto:
@@ -47,7 +47,7 @@ def _dweibull_choose_central_tendency(x_df):
     mode_dweibull = loc if shape > 1 else np.nan
 
     if np.isnan(mode_dweibull):
-        # Data may not have a well-defined mode for certain parameter combinations, so use mean or median
+        # Data may not have a well-defined mode for certain parameter so use mean or median
         return "mean" if mean_dweibull <= median_dweibull else "median"
     # Choose the method based on the mode and other central tendency measures
     if mean_dweibull <= median_dweibull:
@@ -70,7 +70,7 @@ def _genextreme_choose_central_tendency(x_df):
     mode_gev = loc + scale * (1 - shape) ** (-1) if shape < 1 else np.nan
 
     if np.isnan(mode_gev):
-        # Data may not have a well-defined mode for certain parameter combinations, so use mean or median
+        # Data may not have a well-defined mode for certain parameter so use mean or median
         return "mean" if mean_gev <= median_gev else "median"
     # Choose the method based on the mode and other central tendency measures
     if mean_gev <= median_gev:
@@ -143,7 +143,7 @@ def _beta_choose_central_tendency(x_df):
         mode_beta = np.nan
 
     if np.isnan(mode_beta):
-        # Data may not have a well-defined mode for certain parameter combinations, so use mean or median
+        # Data may not have a well-defined mode for certain parameter so use mean or median
         return "mean" if mean_beta <= median_beta else "median"
 
     # Choose the method based on the mode and other central tendency measures

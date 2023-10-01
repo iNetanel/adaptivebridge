@@ -18,7 +18,7 @@ with open("README.md", encoding="utf-8") as read_file:
 
 setup(
     name="adaptivebridge",
-    version="0.9.0 alpha",
+    version="0.9.0",
     packages=find_packages(),
     install_requires=requirements,
     include_package_data=True,

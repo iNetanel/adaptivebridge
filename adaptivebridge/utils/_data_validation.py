@@ -23,17 +23,17 @@ def _convert_to_dataframe(obj, data_type):
             return pd.DataFrame(obj)
         return pd.Series(obj)
     if isinstance(obj, pd.DataFrame):
-        # If it's already a DataFrame, return it as if it's for features and return it as is if it's for target
+        # Return a DataFrame for features, and Series for target
         if data_type == "dataframe":
             return obj
         return pd.Series(obj)
     if isinstance(obj, pd.Series):
-        # If it's already a DataFrame, return it as if it's for features and return it as is if it's for target
+        # Return a DataFrame for features, and Series for target
         if data_type == "dataframe":
             return obj.to_frame()
         return obj
     if isinstance(obj, list):
-        # If it's a Python list, convert it to a DataFrame if it's for features and return it as is if it's for target
+        # If it's a Python list, convert it to a DataFrame for features and Series for target
         if data_type == "dataframe":
             return pd.DataFrame(obj)
         return pd.Series(obj)
@@ -50,5 +50,6 @@ def _convert_to_dataframe(obj, data_type):
             return pd.DataFrame(obj.toarray())
         return pd.Series(obj.toarray())
     raise ValueError(
-        f"Unsupported data type {type(obj)}. Supported types are NumPy arrays, Pandas DataFrames, Python lists, dictionaries, and sparse matrices."
+        f"Unsupported data type {type(obj)}. Supported types are NumPy arrays,"
+        " Pandas DataFrames, Python lists, dictionaries, and sparse matrices."
     )
