@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://inetanel.github.io/adaptivebridge">
-  <img src="https://github.com/inetanel/adaptivebridge/blob/main/docs/assets/images/wide_logo.jpeg" width="600" />
+  <img src="https://github.com/inetanel/adaptivebridge/blob/main/docs/assets/images/wide_logo.jpeg" width="500" />
   </a>
 </p>
 
