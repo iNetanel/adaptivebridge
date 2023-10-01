@@ -18,7 +18,7 @@ with open("README.md", encoding="utf-8") as read_file:
 
 with open("CHANGELOG.md", "r+") as changelog:
     adaptivebridge_version = changelog.read().split(
-        '---')[0].split('- **')[-1][:5]
+        "---")[0].split("- **")[-1][:5]
 
 
 setup(
@@ -26,11 +26,12 @@ setup(
     version=adaptivebridge_version,
     packages=find_packages(),
     install_requires=requirements,
-    extras_require={"dev": ["pytest>=7.4.2", "twine>4.0.2"],
-                    },
+    extras_require={
+        "dev": ["pytest>=7.4.2", "twine>4.0.2"],
+    },
     include_package_data=True,
     zip_safe=True,
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     author="Netanel Eliav",
     author_email="inetanel@me.com",
     url="https://github.com/inetanel/adaptivebridge",
@@ -91,8 +92,6 @@ setup(
         "Intended Audience :: System Administrators",
         "Intended Audience :: Education",
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",

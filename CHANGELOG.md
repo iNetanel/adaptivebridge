@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://inetanel.github.io/adaptivebridge">
-  <img src="https://github.com/inetanel/adaptivebridge/blob/main/docs/assets/images/wide_logo.jpeg" width="500" />
+  <img src="https://github.com/inetanel/adaptivebridge/blob/main/docs/assets/images/wide_logo.jpeg" width="600" />
   </a>
 </p>
 
@@ -29,13 +29,13 @@ The Changelog trailer accepts the following values:
 
 ### Changelog:
 
-- **0.9.7 - Alpha** [011023] (Netanel Eliav):
-    > Note: this version is initial pre-production version (3-Alpha) and it have a lot of major changes to the core of AdaptiveBridge, please make sure to check the documentation.
-    1. Pre Production version.
+- **0.9.0 - Alpha** [011023] (Netanel Eliav):
+    > Note: this version is initial official alpha version (3-Alpha) and it have a lot of major changes to the core of AdaptiveBridge, please make sure to check the documentation.
+    1. Alpha version.
       - Fixed PEP 8 for all files.
       - Added support for feature engineering.
       - Removed Pyramid benchmark.
       - Added documentation.
 ---
-- **0.9.0 - Alpha** [130923] (Netanel Eliav):
-    > Note: this version is initial release version, please make sure to check the documentation.
+- **0.8.0 - Alpha** [130923] (Netanel Eliav):
+    > Note: this version is initial pre-alpha release version, please make sure to check the documentation.
