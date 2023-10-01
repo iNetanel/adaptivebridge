@@ -22,13 +22,13 @@ Libraries Versions:
 - scikit-learn: 1.3.0
 
 Python Script:
-The code well-aligned with the Boston House Prices Dataset benchmark using FeatureBridge and LinearRegression. The other benchmarks will load different model and dataset.
+The code well-aligned with the Boston House Prices Dataset benchmark using AdaptiveBridge and LinearRegression. The other benchmarks will load different model and dataset.
 ```python
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LinearRegression
-from featurebridge import FeatureBridge
+from adaptivebridge import AdaptiveBridge
 
 # Load Boston House Prices Dataset
 df = pd.read_csv('data/boston_housing_prices.csv', header=0, sep=',')
@@ -42,18 +42,18 @@ y_df = df[y_name]
 # Split the dataset into training and testing sets; test set will be 15% of the total dataset
 x_train, x_test, y_train, y_test = train_test_split(x_df, y_df, test_size=0.15, random_state=42)
 
-# Activate FeatureBridge model based on LinearRegression with default values
-feature_bridge = FeatureBridge(LinearRegression())
+# Activate AdaptiveBridge model based on LinearRegression with default values
+adaptive_bridge = AdaptiveBridge(LinearRegression())
 
-# Train (Fit) FeatureBridge to the data without feature engineering
-feature_bridge.fit(x_train, y_train)
+# Train (Fit) AdaptiveBridge to the data without feature engineering
+adaptive_bridge.fit(x_train, y_train)
 
-# Print the FeatureBridge feature sequence and table
-print("Feature Sequence:\n", feature_bridge.feature_sequence())
-print("Feature Table:\n", feature_bridge.feature_table())
+# Print the AdaptiveBridge feature sequence and table
+print("Feature Sequence:\n", adaptive_bridge.feature_sequence())
+print("Feature Table:\n", adaptive_bridge.feature_table())
 
 # Run benchmark on the test dataset to check accuracy and fit
-benchmark_score = feature_bridge.benchmark(x_test, y_test)
+benchmark_score = adaptive_bridge.benchmark(x_test, y_test)
 print("Benchmark Score:", benchmark_score)
 
 ```
@@ -61,7 +61,7 @@ print("Benchmark Score:", benchmark_score)
 
 ## Results
 
-The primary objective of our benchmark is to demonstrate that FeatureBridge can effectively bridge the gap caused by missing features and data. However, it's important to note that this improvement in data completeness comes at the cost of performance. FeatureBridge is designed to address practical production problems rather than theoretical research challenges.
+The primary objective of our benchmark is to demonstrate that AdaptiveBridge can effectively bridge the gap caused by missing features and data. However, it's important to note that this improvement in data completeness comes at the cost of performance. AdaptiveBridge is designed to address practical production problems rather than theoretical research challenges.
 
 The benchmarks presented below utilize models that may not necessarily be the optimal choice for the specific database type (such as Linear versus Logistic models). Initial accuracy figures are not relevant because essential processes like feature engineering, feature scaling, data cleanup, and outlier removal have not been performed.
 
@@ -73,7 +73,7 @@ Additionally, it's crucial to consider the impact of using `train_test_split` to
 
 Model: Default LinearRegression()
 Model Parameters: None
-FeatureBridge Parameters: Default
+AdaptiveBridge Parameters: Default
 Number of Features: 12
 Fit Duraction: 20.7s
 
@@ -104,33 +104,33 @@ Prediction by Adaptive Model: (will be predict by adaptiv model)
 
  ```
 
-![Boston House Prices Dataset Feature Impact](/featurebridge/assets/images/boston_housing_prices_lfi.png)
+![Boston House Prices Dataset Feature Impact](/adaptivebridge/assets/images/boston_housing_prices_lfi.png)
 
-**Explanation**: The results presented reveal that the FeatureBridge Adaptive model has the capability to handle all features within its scope. None of these features were designated as mandatory, which implies that as long as at least one feature value is provided, the adaptive model can effectively make predictions and furnish them to the user.
+**Explanation**: The results presented reveal that the AdaptiveBridge Adaptive model has the capability to handle all features within its scope. None of these features were designated as mandatory, which implies that as long as at least one feature value is provided, the adaptive model can effectively make predictions and furnish them to the user.
 
 ```bash
-FeatureBridge Performance Matrix:
-Non-FeatureBridge Model Accuracy in %: **0.7917835776631301**
+AdaptiveBridge Performance Matrix:
+Non-AdaptiveBridge Model Accuracy in %: **0.7917835776631301**
 
-This shows the performance of FeatureBridge, the average accuracy for every number of features missing:
-Average FeatureBridge accuracy in % with 1 missing features: **0.7836536074005985**
-Average FeatureBridge accuracy in % with 2 missing features: **0.7779702423922812**
-Average FeatureBridge accuracy in % with 3 missing features: **0.7739865208421037**
-Average FeatureBridge accuracy in % with 4 missing features: **0.770672263793981**
-Average FeatureBridge accuracy in % with 5 missing features: **0.7668064812520304**
-Average FeatureBridge accuracy in % with 6 missing features: **0.7610805318016617**
-Average FeatureBridge accuracy in % with 7 missing features: **0.7521942666991065**
-Average FeatureBridge accuracy in % with 8 missing features: **0.7389524904341405**
-Average FeatureBridge accuracy in % with 9 missing features: **0.7203338609927032**
-Average FeatureBridge accuracy in % with 10 missing features: **0.6954964226869044**
-Average FeatureBridge accuracy in % with 11 missing features: **0.6637259559697675**
-Average FeatureBridge accuracy in % with 12 missing features: **0.6244068118496848**
+This shows the performance of AdaptiveBridge, the average accuracy for every number of features missing:
+Average AdaptiveBridge accuracy in % with 1 missing features: **0.7836536074005985**
+Average AdaptiveBridge accuracy in % with 2 missing features: **0.7779702423922812**
+Average AdaptiveBridge accuracy in % with 3 missing features: **0.7739865208421037**
+Average AdaptiveBridge accuracy in % with 4 missing features: **0.770672263793981**
+Average AdaptiveBridge accuracy in % with 5 missing features: **0.7668064812520304**
+Average AdaptiveBridge accuracy in % with 6 missing features: **0.7610805318016617**
+Average AdaptiveBridge accuracy in % with 7 missing features: **0.7521942666991065**
+Average AdaptiveBridge accuracy in % with 8 missing features: **0.7389524904341405**
+Average AdaptiveBridge accuracy in % with 9 missing features: **0.7203338609927032**
+Average AdaptiveBridge accuracy in % with 10 missing features: **0.6954964226869044**
+Average AdaptiveBridge accuracy in % with 11 missing features: **0.6637259559697675**
+Average AdaptiveBridge accuracy in % with 12 missing features: **0.6244068118496848**
 
 ```
 
-![Boston House Prices Dataset Accuracy Graph](/featurebridge/assets/images/boston_housing_prices_laccuracy.png)
+![Boston House Prices Dataset Accuracy Graph](/adaptivebridge/assets/images/boston_housing_prices_laccuracy.png)
 
-**Explanation**: The presented results indicate that the FeatureBridge Adaptive model experiences an average accuracy decrease of 0.8% when one feature is missing. This benchmark calculation was performed for each instance of a single feature being absent, and the resulting accuracies were then averaged.
+**Explanation**: The presented results indicate that the AdaptiveBridge Adaptive model experiences an average accuracy decrease of 0.8% when one feature is missing. This benchmark calculation was performed for each instance of a single feature being absent, and the resulting accuracies were then averaged.
 
 Similarly, the same calculation was conducted for cases involving two, three, four, and so on, missing features. It's essential to note that this analysis excludes features designated as mandatory or user-defined (as a part of feature engineering) since users are required to provide values for them. In the Boston dataset mentioned above, none of the features were set as mandatory, allowing for the possibility of up to 12 features being missing.
 
@@ -140,7 +140,7 @@ Similarly, the same calculation was conducted for cases involving two, three, fo
 
 Model: Default RandomForestRegressor()
 Model Parameters: None
-FeatureBridge Parameters: Default
+AdaptiveBridge Parameters: Default
 Number of Features: 4
 Fit Duraction: 0.6s
 
@@ -162,16 +162,16 @@ Prediction by Adaptive Model: (will be predict by adaptiv model)
 
 ```
 
-![Iris Dataset Feature Impact](/featurebridge/assets/images/iris_dfi.png)
+![Iris Dataset Feature Impact](/adaptivebridge/assets/images/iris_dfi.png)
 
-FeatureBridge Performance Matrix:
-Non-FeatureBridge Model Accuracy in %: **0.9347826086956522**
+AdaptiveBridge Performance Matrix:
+Non-AdaptiveBridge Model Accuracy in %: **0.9347826086956522**
 
-This shows the performance of FeatureBridge, the average accuracy for every number of features missing:
-Average FeatureBridge accuracy in % with 1 missing features: **0.9349275362318842**
-Average FeatureBridge accuracy in % with 2 missing features: **0.9211594202898551**
+This shows the performance of AdaptiveBridge, the average accuracy for every number of features missing:
+Average AdaptiveBridge accuracy in % with 1 missing features: **0.9349275362318842**
+Average AdaptiveBridge accuracy in % with 2 missing features: **0.9211594202898551**
 
-![Iris Dataset Accuracy Graph](/featurebridge/assets/images/iris_daccuracy.png)
+![Iris Dataset Accuracy Graph](/adaptivebridge/assets/images/iris_daccuracy.png)
 
 ---
 
@@ -179,7 +179,7 @@ Average FeatureBridge accuracy in % with 2 missing features: **0.921159420289855
 
 Model: Default Ridge()
 Model Parameters: None
-FeatureBridge Parameters: Default
+AdaptiveBridge Parameters: Default
 Number of Features: 11
 Fit Duraction: 1.1s
 
@@ -207,25 +207,25 @@ Prediction by Adaptive Model: (will be predict by adaptiv model)
 
 ```
 
-![Red Wine Dataset Feature Impact](/featurebridge/assets/images/red_wine_quality_rfi.png)
+![Red Wine Dataset Feature Impact](/adaptivebridge/assets/images/red_wine_quality_rfi.png)
 
 ```bash
-FeatureBridge Performance Matrix:
-Non-FeatureBridge Model Accuracy in %: **0.8999241048297895**
+AdaptiveBridge Performance Matrix:
+Non-AdaptiveBridge Model Accuracy in %: **0.8999241048297895**
 
-This shows the performance of FeatureBridge, the average accuracy for every number of features missing:
-Average FeatureBridge accuracy in % with 1 missing features: **0.89852452273704**
-Average FeatureBridge accuracy in % with 2 missing features: **0.8970789861014118**
-Average FeatureBridge accuracy in % with 3 missing features: **0.8955704693977624**
-Average FeatureBridge accuracy in % with 4 missing features: **0.8939804368062005**
-Average FeatureBridge accuracy in % with 5 missing features: **0.8922916094583999**
-Average FeatureBridge accuracy in % with 6 missing features: **0.890493262777842**
-Average FeatureBridge accuracy in % with 7 missing features: **0.8885868798320217**
-Average FeatureBridge accuracy in % with 8 missing features: **0.8865898996165795**
+This shows the performance of AdaptiveBridge, the average accuracy for every number of features missing:
+Average AdaptiveBridge accuracy in % with 1 missing features: **0.89852452273704**
+Average AdaptiveBridge accuracy in % with 2 missing features: **0.8970789861014118**
+Average AdaptiveBridge accuracy in % with 3 missing features: **0.8955704693977624**
+Average AdaptiveBridge accuracy in % with 4 missing features: **0.8939804368062005**
+Average AdaptiveBridge accuracy in % with 5 missing features: **0.8922916094583999**
+Average AdaptiveBridge accuracy in % with 6 missing features: **0.890493262777842**
+Average AdaptiveBridge accuracy in % with 7 missing features: **0.8885868798320217**
+Average AdaptiveBridge accuracy in % with 8 missing features: **0.8865898996165795**
 
 ```
 
-![Red Wine Dataset Accuracy Graph](/featurebridge/assets/images/red_wine_quality_raccuracy.png)
+![Red Wine Dataset Accuracy Graph](/adaptivebridge/assets/images/red_wine_quality_raccuracy.png)
 
 ---
 
@@ -233,7 +233,7 @@ Average FeatureBridge accuracy in % with 8 missing features: **0.886589899616579
 
 Model: Default ElasticNet()
 Model Parameters: None
-FeatureBridge Parameters: Default
+AdaptiveBridge Parameters: Default
 Number of Features: 11
 Fit Duraction: 5.0s
 
@@ -262,27 +262,27 @@ Prediction by Adaptive Model: (will be predict by adaptiv model)
 
 ```
 
-![White Wine Dataset Feature Impact](/featurebridge/assets/images/white_wine_quality_efi.png)
+![White Wine Dataset Feature Impact](/adaptivebridge/assets/images/white_wine_quality_efi.png)
 
 ```bash
-FeatureBridge Performance Matrix:
-Non-FeatureBridge Model Accuracy in %: **0.8840083420188398**
+AdaptiveBridge Performance Matrix:
+Non-AdaptiveBridge Model Accuracy in %: **0.8840083420188398**
 
-This shows the performance of FeatureBridge, the average accuracy for every number of features missing:
-Average FeatureBridge accuracy in % with 1 missing features: **0.8839940381275283**
-Average FeatureBridge accuracy in % with 2 missing features: **0.8839205157197451**
-Average FeatureBridge accuracy in % with 3 missing features: **0.88379118083091**
-Average FeatureBridge accuracy in % with 4 missing features: **0.883610683410401**
-Average FeatureBridge accuracy in % with 5 missing features: **0.883384917321556**
-Average FeatureBridge accuracy in % with 6 missing features: **0.8831210203416705**
-Average FeatureBridge accuracy in % with 7 missing features: **0.8828273741619942**
-Average FeatureBridge accuracy in % with 8 missing features: **0.882513604387736**
-Average FeatureBridge accuracy in % with 9 missing features: **0.8821905805380693**
-Average FeatureBridge accuracy in % with 10 missing features: **0.8818704160461195**
+This shows the performance of AdaptiveBridge, the average accuracy for every number of features missing:
+Average AdaptiveBridge accuracy in % with 1 missing features: **0.8839940381275283**
+Average AdaptiveBridge accuracy in % with 2 missing features: **0.8839205157197451**
+Average AdaptiveBridge accuracy in % with 3 missing features: **0.88379118083091**
+Average AdaptiveBridge accuracy in % with 4 missing features: **0.883610683410401**
+Average AdaptiveBridge accuracy in % with 5 missing features: **0.883384917321556**
+Average AdaptiveBridge accuracy in % with 6 missing features: **0.8831210203416705**
+Average AdaptiveBridge accuracy in % with 7 missing features: **0.8828273741619942**
+Average AdaptiveBridge accuracy in % with 8 missing features: **0.882513604387736**
+Average AdaptiveBridge accuracy in % with 9 missing features: **0.8821905805380693**
+Average AdaptiveBridge accuracy in % with 10 missing features: **0.8818704160461195**
 
 ```
 
-![White Wine Dataset Accuracy Graph](/featurebridge/assets/images/white_wine_quality_eaccuracy.png)
+![White Wine Dataset Accuracy Graph](/adaptivebridge/assets/images/white_wine_quality_eaccuracy.png)
 
 ---
 
@@ -290,7 +290,7 @@ Average FeatureBridge accuracy in % with 10 missing features: **0.88187041604611
 
 Model: Default RandomForestRegressor()
 Model Parameters: None
-FeatureBridge Parameters: correlation_threshold=0.85, importance_threshold=0.05 **Changed due to high CPU utilization and long training time**
+AdaptiveBridge Parameters: correlation_threshold=0.85, importance_threshold=0.05 **Changed due to high CPU utilization and long training time**
 Number of Features: 30
 Fit Duraction: 5.7s
 
@@ -337,44 +337,44 @@ Prediction by Adaptive Model: (will be predict by adaptiv model)
 
 ```
 
-![Breast Cancer Dataset Feature Impact](/featurebridge/assets/images/breast_cancer_wisconsin_diagnostic_rfi.png)
+![Breast Cancer Dataset Feature Impact](/adaptivebridge/assets/images/breast_cancer_wisconsin_diagnostic_rfi.png)
 
-**Explanation**: The presented results highlight that the FeatureBridge Adaptive model designates two features as mandatory, namely `perimeter_worst` and `area_worst`. This designation signifies that as long as values for these specific features are provided, the adaptive model can proficiently generate predictions and complete the prediction process for any remaining missing features.
+**Explanation**: The presented results highlight that the AdaptiveBridge Adaptive model designates two features as mandatory, namely `perimeter_worst` and `area_worst`. This designation signifies that as long as values for these specific features are provided, the adaptive model can proficiently generate predictions and complete the prediction process for any remaining missing features.
 
 ```bash
-FeatureBridge Performance Matrix:
-Non-FeatureBridge Model Accuracy in %: **0.9072574178027265**
+AdaptiveBridge Performance Matrix:
+Non-AdaptiveBridge Model Accuracy in %: **0.9072574178027265**
 
-This shows the performance of FeatureBridge, the average accuracy for every number of features missing:
-Average FeatureBridge accuracy in % with 1 missing features: **0.9002714522979247**
-Average FeatureBridge accuracy in % with 2 missing features: **0.8938451077907089**
-Average FeatureBridge accuracy in % with 3 missing features: **0.8892630941206685**
-Average FeatureBridge accuracy in % with 4 missing features: **0.8788332233859213**
-Average FeatureBridge accuracy in % with 5 missing features: **0.8747428523426751**
-Average FeatureBridge accuracy in % with 6 missing features: **0.8713123511689101**
-Average FeatureBridge accuracy in % with 7 missing features: **0.8669112776423517**
-Average FeatureBridge accuracy in % with 8 missing features: **0.8637995023398635**
-Average FeatureBridge accuracy in % with 9 missing features: **0.8571347680397212**
-Average FeatureBridge accuracy in % with 10 missing features: **0.8535726477516224**
-Average FeatureBridge accuracy in % with 11 missing features: **0.8496700447785884**
-Average FeatureBridge accuracy in % with 12 missing features: **0.8462292668989493**
-Average FeatureBridge accuracy in % with 13 missing features: **0.8892630941206685**
-Average FeatureBridge accuracy in % with 14 missing features: **0.8431958162996332**
-Average FeatureBridge accuracy in % with 15 missing features: **0.8405121215973477**
-Average FeatureBridge accuracy in % with 16 missing features: **0.8388349740520229**
-Average FeatureBridge accuracy in % with 17 missing features: **0.8371875735292501**
-Average FeatureBridge accuracy in % with 18 missing features: **0.8358669885120639**
-Average FeatureBridge accuracy in % with 19 missing features: **0.8335050352262703**
-Average FeatureBridge accuracy in % with 20 missing features: **0.8319901285920722**
-Average FeatureBridge accuracy in % with 21 missing features: **0.8306005607603338**
-Average FeatureBridge accuracy in % with 22 missing features: **0.829106460435239**
-Average FeatureBridge accuracy in % with 23 missing features: **0.8269835092168991**
-Average FeatureBridge accuracy in % with 24 missing features: **0.8246713565122725**
-Average FeatureBridge accuracy in % with 25 missing features: **0.8243314030417173**
-Average FeatureBridge accuracy in % with 26 missing features: **0.8240143727860272**
-Average FeatureBridge accuracy in % with 27 missing features: **0.8219242715441056**
-Average FeatureBridge accuracy in % with 28 missing features: **0.820920352262714**
+This shows the performance of AdaptiveBridge, the average accuracy for every number of features missing:
+Average AdaptiveBridge accuracy in % with 1 missing features: **0.9002714522979247**
+Average AdaptiveBridge accuracy in % with 2 missing features: **0.8938451077907089**
+Average AdaptiveBridge accuracy in % with 3 missing features: **0.8892630941206685**
+Average AdaptiveBridge accuracy in % with 4 missing features: **0.8788332233859213**
+Average AdaptiveBridge accuracy in % with 5 missing features: **0.8747428523426751**
+Average AdaptiveBridge accuracy in % with 6 missing features: **0.8713123511689101**
+Average AdaptiveBridge accuracy in % with 7 missing features: **0.8669112776423517**
+Average AdaptiveBridge accuracy in % with 8 missing features: **0.8637995023398635**
+Average AdaptiveBridge accuracy in % with 9 missing features: **0.8571347680397212**
+Average AdaptiveBridge accuracy in % with 10 missing features: **0.8535726477516224**
+Average AdaptiveBridge accuracy in % with 11 missing features: **0.8496700447785884**
+Average AdaptiveBridge accuracy in % with 12 missing features: **0.8462292668989493**
+Average AdaptiveBridge accuracy in % with 13 missing features: **0.8892630941206685**
+Average AdaptiveBridge accuracy in % with 14 missing features: **0.8431958162996332**
+Average AdaptiveBridge accuracy in % with 15 missing features: **0.8405121215973477**
+Average AdaptiveBridge accuracy in % with 16 missing features: **0.8388349740520229**
+Average AdaptiveBridge accuracy in % with 17 missing features: **0.8371875735292501**
+Average AdaptiveBridge accuracy in % with 18 missing features: **0.8358669885120639**
+Average AdaptiveBridge accuracy in % with 19 missing features: **0.8335050352262703**
+Average AdaptiveBridge accuracy in % with 20 missing features: **0.8319901285920722**
+Average AdaptiveBridge accuracy in % with 21 missing features: **0.8306005607603338**
+Average AdaptiveBridge accuracy in % with 22 missing features: **0.829106460435239**
+Average AdaptiveBridge accuracy in % with 23 missing features: **0.8269835092168991**
+Average AdaptiveBridge accuracy in % with 24 missing features: **0.8246713565122725**
+Average AdaptiveBridge accuracy in % with 25 missing features: **0.8243314030417173**
+Average AdaptiveBridge accuracy in % with 26 missing features: **0.8240143727860272**
+Average AdaptiveBridge accuracy in % with 27 missing features: **0.8219242715441056**
+Average AdaptiveBridge accuracy in % with 28 missing features: **0.820920352262714**
 
 ```
 
-![Breast Cancer Dataset Accuracy Graph](/featurebridge/assets/images/breast_cancer_wisconsin_diagnostic_raccuracy.png)
+![Breast Cancer Dataset Accuracy Graph](/adaptivebridge/assets/images/breast_cancer_wisconsin_diagnostic_raccuracy.png)

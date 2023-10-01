@@ -164,7 +164,7 @@ setup.py
 #MacOS
 .DS_Store
 
-#FeatureBridge
+#AdaptiveBridge
 notes.txt
 
 # PyCharm

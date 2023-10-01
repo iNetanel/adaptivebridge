@@ -1,7 +1,7 @@
 #!/bin/env python
-# featurebridge/utils/_error_handler.py
+# adaptivebridge/utils/_error_handler.py
 """
-    Package Name: FeatureBridge
+    Package Name: AdaptiveBridge
     Author: Netanel Eliav
     Author Email: inetanel@me.com
     License: MIT License

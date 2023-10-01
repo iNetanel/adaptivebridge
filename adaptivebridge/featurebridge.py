@@ -1,7 +1,7 @@
 #!/bin/env python
-# featurebridge/featurebridge.py
+# adaptivebridge/adaptivebridge.py
 """
-    Package Name: FeatureBridge
+    Package Name: AdaptiveBridge
     Author: Netanel Eliav
     Author Email: inetanel@me.com
     License: MIT License
@@ -16,10 +16,10 @@ import copy, time
 import matplotlib.pyplot as plt
 from itertools import combinations
 
-# Import FeatureBridge methods and utils
+# Import AdaptiveBridge methods and utils
 from .utils import *
 
-# Default values for FeatureBridge
+# Default values for AdaptiveBridge
 CORRELATION_THRESHOLD = 0.25
 MIN_ACCURACY = 0.5
 DEFAULT_ACCURACY_SELECTION = 0.95
@@ -28,8 +28,8 @@ ACCURACY_LOGIC = _mean_absolute_percentage_error
 FEATURE_ENGINEERING = []
 
 
-# Define a class named FeatureBridge
-class FeatureBridge:
+# Define a class named AdaptiveBridge
+class AdaptiveBridge:
     def __init__(
         self,
         model,
@@ -40,7 +40,7 @@ class FeatureBridge:
         accuracy_logic=ACCURACY_LOGIC,
     ):
         """
-        Initialize the main FeatureBridge object.
+        Initialize the main AdaptiveBridge object.
 
         Parameters:
             model (object): The machine learning model backbone (e.g., LinearRegression) to be used for modeling.
@@ -84,11 +84,11 @@ class FeatureBridge:
         Define the string representation of the object.
 
         Returns:
-            FeatureBridge internal information
+            AdaptiveBridge internal information
         """
 
         message = f"""
-        FeatureBridge Class:
+        AdaptiveBridge Class:
          - Parameters:
             - Model (Backbone) = {self.model.__class__.__name__}
             - Correlation Threshold = {self.correlation_threshold}
@@ -654,7 +654,7 @@ class FeatureBridge:
         model = copy.deepcopy(self.model)
         ypred = model.predict(x_test_df)
         main_acc = 1 - self.accuracy_logic(y_test_df, ypred)
-        print("Non-FeatureBridge Model Accuracy: {}\n".format(main_acc))
+        print("Non-AdaptiveBridge Model Accuracy: {}\n".format(main_acc))
 
         acc_results = []
         test_results = []
@@ -673,7 +673,7 @@ class FeatureBridge:
         modified_results = [0 if x < 0 else x for x in results]
 
         print(
-            "FeatureBridge feature accuracy impact:\nThis shows the impact of each feature when it's missing\n(Higher % number means higher impact in %)"
+            "AdaptiveBridge feature accuracy impact:\nThis shows the impact of each feature when it's missing\n(Higher % number means higher impact in %)"
         )
         features = list(self.feature_map["deviation"].keys()) + list(
             self.feature_map["adaptive"].keys()
@@ -688,7 +688,7 @@ class FeatureBridge:
         plt.show()
 
         print(
-            "FeatureBridge Performance Matrix:\nThis shows the performance of FeatureBridge, the average accuracy for every number of features missing.\n---"
+            "AdaptiveBridge Performance Matrix:\nThis shows the performance of AdaptiveBridge, the average accuracy for every number of features missing.\n---"
         )
         acc_results = []
         test_results = []
@@ -715,7 +715,7 @@ class FeatureBridge:
             avg = sum(acc_results) / len(acc_results)
             main_accuracy.append(avg)
             print(
-                "Average FeatureBridge accuracy with {} missing features: {}".format(
+                "Average AdaptiveBridge accuracy with {} missing features: {}".format(
                     r, avg
                 )
             )

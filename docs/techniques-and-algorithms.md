@@ -2,7 +2,7 @@
 
 ## Feature Importance
 
-In the context of FeatureBridge, understanding feature importance is essential for optimizing predictions. Feature importance helps determine which features should be prioritized for prediction, particularly when they meet a certain importance threshold defined by the user (referred to as `importance_threshold`).
+In the context of AdaptiveBridge, understanding feature importance is essential for optimizing predictions. Feature importance helps determine which features should be prioritized for prediction, particularly when they meet a certain importance threshold defined by the user (referred to as `importance_threshold`).
 
 Feature importance quantifies the contribution of each feature to a machine learning model's predictions. It's important to note that the importance of a feature is not solely determined by the weight (often denoted as "w") assigned to it in models like linear regression or logistic regression. Instead, it depends on several factors, including magnitude, direction, and impact.
 
@@ -24,4 +24,4 @@ The impact of a feature reflects its actual contribution to predictions. This im
 
 By using magnitude (w), and impact only, we are calculating the feature's importance and effectiveness.
 
-The feature's importance can be accessed by the instance variable `FeatureBridge.feature_importance_score()`.
+The feature's importance can be accessed by the instance variable `AdaptiveBridge.feature_importance_score()`.

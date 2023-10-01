@@ -1,11 +1,14 @@
 #!/bin/env python
-# featurebridge/utils/__init__.py
-__author__ = "Netanel Eliav"
-__email__ = "inetanel@me.com"
-__version__ = "1.0.0 alpha"
-__license__ = "MIT License"
+# adaptivebridge/utils/__init__.py
+"""
+    Package Name: AdaptiveBridge
+    Author: Netanel Eliav
+    Author Email: inetanel@me.com
+    License: MIT License
+    Version: Please refer to the repository for the latest version and updates.
+"""
 
-# Import FeatureBridge methods and helpers
+# Import AdaptiveBridge methods and helpers
 from ._metrics import (
     _mean_absolute_percentage_error,
 )

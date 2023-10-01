@@ -1,7 +1,7 @@
 #!/bin/env python
-# featurebridge/utils/_metrics.py
+# adaptivebridge/utils/_metrics.py
 """
-    Package Name: FeatureBridge
+    Package Name: AdaptiveBridge
     Author: Netanel Eliav
     Author Email: inetanel@me.com
     License: MIT License

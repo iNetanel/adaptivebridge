@@ -1,26 +1,26 @@
-# FeatureBridge
+# AdaptiveBridge
 
-![FeatureBridge Logo](https://github.com/inetanel/featurebridge/main/docs/assets/images/logo.jpeg)
+![AdaptiveBridge Logo](https://github.com/inetanel/adaptivebridge/main/docs/assets/images/logo.jpeg)
 
-[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/inetanel/featurebridge)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/inetanel/adaptivebridge)
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-- **Project Name:** FeatureBridge
+- **Project Name:** AdaptiveBridge
 - **License:** MIT License
 - **Author:** Netanel Eliav
 - **Author Website:** [https://inetanel.com](https://inetanel.com)
 - **Author Email:** [inetanel@me.com](mailto:inetanel@me.com)
-- **Documentation:** [Click Here](https://inetanel.github.io/featurebridge)
-- **Issue Tracker:** [Click Here](https://github.com/inetanel/featurebridge/issues)
+- **Documentation:** [Click Here](https://inetanel.github.io/adaptivebridge)
+- **Issue Tracker:** [Click Here](https://github.com/inetanel/adaptivebridge/issues)
 
 
 ## Overview
 
-FeatureBridge is a revolutionary adaptive modeling for machine learning applications, particularly in the realm of Artificial Intelligence. It tackles a common challenge in AI projects: handling missing features in real-world scenarios. Machine learning models are often trained on specific features, but when deployed, users may not have access to all those features for predictions. FeatureBridge bridges this gap by enabling models to intelligently predict and fill in missing features, similar to how humans handle incomplete data. This ensures that AI models can seamlessly manage missing data and features while providing accurate predictions.
+AdaptiveBridge is a revolutionary adaptive modeling for machine learning applications, particularly in the realm of Artificial Intelligence. It tackles a common challenge in AI projects: handling missing features in real-world scenarios. Machine learning models are often trained on specific features, but when deployed, users may not have access to all those features for predictions. AdaptiveBridge bridges this gap by enabling models to intelligently predict and fill in missing features, similar to how humans handle incomplete data. This ensures that AI models can seamlessly manage missing data and features while providing accurate predictions.
 
 ### Key Features
 
-- **Missing Feature Prediction:** FeatureBridge empowers AI models to predict and fill in missing features based on the available data.
+- **Missing Feature Prediction:** AdaptiveBridge empowers AI models to predict and fill in missing features based on the available data.
 - **Feature Selection for Mapping:** You can impact the features prediction methods by using configurable thresholds for importance, correlation, and accuracy.
 - **Adaptive Modeling:** Utilize machine learning models to predict missing features, maintaining high prediction accuracy even with incomplete data.
 - **Custom Accuracy Logic:** Define your own accuracy calculation logic to fine-tune feature selection.
@@ -29,28 +29,29 @@ FeatureBridge is a revolutionary adaptive modeling for machine learning applicat
 
 ## Usage
 
-With FeatureBridge, integrating this powerful tool into your AI and machine learning pipelines is easy. Fit the class to your data, and let it handle missing features intelligently. Detailed comments and comprehensive documentation are provided for straightforward implementation.
+With AdaptiveBridge, integrating this powerful tool into your AI and machine learning pipelines is easy. Fit the class to your data, and let it handle missing features intelligently. Detailed comments and comprehensive documentation are provided for straightforward implementation.
 
 ## Getting Started
 
-Follow these steps to get started with FeatureBridge:
+Follow these steps to get started with AdaptiveBridge:
 
 1. Clone this repository:
 
    ```shell
-   pip install featurebridge
+   pip install adaptivebridge
    
    ```
 
    ```shell
    # Alternatively 
-   git clone https://github.com/inetanel/featurebridge.git
+   git clone https://github.com/inetanel/adaptivebridge.git
    pip install -r requirements.txt
    
    ```
    
 ## Dependencies 
 
+- Sklearn
 - NumPy
 - Pandas
 - Distfit
@@ -58,7 +59,7 @@ Follow these steps to get started with FeatureBridge:
 
 ## Contribution
 
-Contributions and feedback are highly encouraged. You can open issues, submit pull requests for enhancements or bug fixes, and be part of the AI community that advances FeatureBridge.
+Contributions and feedback are highly encouraged. You can open issues, submit pull requests for enhancements or bug fixes, and be part of the AI community that advances AdaptiveBridge.
 
 ## License
 

@@ -1,7 +1,7 @@
 #!/bin/env python
-# featurebridge/utils/_data_validation.py
+# adaptivebridge/utils/_data_validation.py
 """
-    Package Name: FeatureBridge
+    Package Name: AdaptiveBridge
     Author: Netanel Eliav
     Author Email: inetanel@me.com
     License: MIT License
