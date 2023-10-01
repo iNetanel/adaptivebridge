@@ -1,6 +1,6 @@
 # FeatureBridge
 
-![FeatureBridge Logo](https://github.com/inetanel/featurebridge/docs/assets/images/logo.jpeg)
+![FeatureBridge Logo](https://github.com/inetanel/featurebridge/main/docs/assets/images/logo.jpeg)
 
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/inetanel/featurebridge)
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
