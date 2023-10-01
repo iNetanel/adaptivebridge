@@ -1,15 +1,13 @@
 # adaptivebridge/docs/_config.yml
-"""
-    Package Name: AdaptiveBridge
-    Author: Netanel Eliav
-    Author Email: inetanel@me.com
-    License: MIT License
-    Version: Please refer to the repository for the latest version and updates.
-"""
+# Package Name: AdaptiveBridge
+# Author: Netanel Eliav
+# Author Email: inetanel@me.com
+# Version: Please refer to the repository for the latest version and updates.
+
 # Name of website
 title: AdaptiveBridge's Documentation
 
-# Your name to show in the footer
+# Author name
 author: Netanel Eliav
 
 # Plugins
@@ -18,4 +16,6 @@ plugins:
   - jekyll-avatar
   - jekyll-mentions
 
+# Theme
 remote_theme: rundocs/jekyll-rtd-theme
+
