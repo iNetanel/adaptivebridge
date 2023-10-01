@@ -12,13 +12,25 @@
 # Import necessary libraries
 import copy
 import time
+from itertools import combinations
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from itertools import combinations
 
-# Import AdaptiveBridge methods and utils
-from .utils import *
+# Import AdaptiveBridge methods and helpers
+from .utils._metrics import (
+    _mean_absolute_percentage_error,
+)
+from .utils._data_distribution import (
+    _fit_distribution,
+)
+from .utils._data_validation import (
+    _convert_to_dataframe,
+)
+from .utils._error_handler import (
+    MandatoryFeatureError,
+    EngineeringFeatureError,
+)
 
 # Default values for AdaptiveBridge
 CORRELATION_THRESHOLD = 0.25
@@ -26,11 +38,16 @@ MIN_ACCURACY = 0.5
 DEFAULT_ACCURACY_SELECTION = 0.95
 IMPORTANCE_THRESHOLD = 0.1
 ACCURACY_LOGIC = _mean_absolute_percentage_error
-FEATURE_ENGINEERING = []
+FEATURE_ENGINEERING = ()
 
 
 # Define a class named AdaptiveBridge
 class AdaptiveBridge:
+    """
+    Main AdaptiveBridge class.
+    This class is the main function, please see documentation.
+    """
+
     def __init__(
         self,
         model,
@@ -72,6 +89,7 @@ class AdaptiveBridge:
             None  # Placeholder for feature distribution statistics
         )
         self.feature_importance = None  # Placeholder for basic feature importance
+        self.feature_map = None  # Placeholder for feature map
         self.corr_matrix = None  # Placeholder for the correlation matrix
         self.max_feature = None  # Placeholder for the most important feature
         self.max_index = (
@@ -122,17 +140,12 @@ class AdaptiveBridge:
         for feature in self.feature_engineering:
             if feature not in x_df.columns:
                 raise EngineeringFeatureError(
-                    "User-defined feature-engineering feature required and is completely missing: {}".format(
-                        feature
-                    )
+                    f"User-defined feature-engineering feature required and is completely missing: {feature}"
                 )
-            else:
-                if x_df[feature].isna().any().any():
-                    raise EngineeringFeatureError(
-                        "User-defined feature-engineering feature is partially missing: {} > (please check for NaN values in your dataset)".format(
-                            feature
-                        )
-                    )
+            if x_df[feature].isna().any().any():
+                raise EngineeringFeatureError(
+                    f"User-defined feature-engineering feature is partially missing: {feature} > (please check for NaN values in your dataset)"
+                )
 
         x_df = _convert_to_dataframe(
             x_df, "dataframe"
@@ -187,17 +200,12 @@ class AdaptiveBridge:
         for feature in self.feature_map["engineering"]:
             if feature not in x_df.columns:
                 raise EngineeringFeatureError(
-                    "User-defined feature-engineering feature required and is completely missing: {}".format(
-                        feature
-                    )
+                    f"User-defined feature-engineering feature required and is completely missing: {feature}"
                 )
-            else:
-                if x_df[feature].isna().any().any():
-                    raise EngineeringFeatureError(
-                        "User-defined feature-engineering feature is partially missing: {} > (please check for NaN values in your dataset)".format(
-                            feature
-                        )
-                    )
+            if x_df[feature].isna().any().any():
+                raise EngineeringFeatureError(
+                    f"User-defined feature-engineering feature is partially missing: {feature} > (please check for NaN values in your dataset)"
+                )
 
         return self.model.predict(x_df)
 
@@ -222,8 +230,7 @@ class AdaptiveBridge:
             feature_importances = self.model.feature_importances_
             return feature_importances.ravel()
 
-        raise ValueError(
-            f"Model type {type(self.model)} not recognized or supported.")
+        raise ValueError(f"Model type {type(self.model)} not recognized or supported.")
 
     # Method to calculate feature importance
     def _calculate_importance(self):
@@ -252,8 +259,8 @@ class AdaptiveBridge:
         """
 
         features_list = self.x_df.columns
-        for i, v in enumerate(self.feature_importance):
-            print("Feature: %s (%0d), Score: %.5f" % (features_list[i], i, v))
+        for i, j in enumerate(self.feature_importance):
+            print("Feature: %s (%0d), Score: %.5f" % (features_list[i], i, j))
 
     # Method to determine feature distribution characteristics
     def _distribution(self):
@@ -267,8 +274,7 @@ class AdaptiveBridge:
         feature_distribution = {}
         for feature in self.x_df.columns:
             # Check if data is binary (0 or 1)
-            feature_distribution[feature] = _fit_distribution(
-                self.x_df[feature])
+            feature_distribution[feature] = _fit_distribution(self.x_df[feature])
 
         return feature_distribution
 
@@ -305,9 +311,9 @@ class AdaptiveBridge:
         """
 
         all_combinations = []
-        for r in range(1, len(x_df) + 1):
-            comb_r = list(combinations(x_df, r))
-            all_combinations.extend(comb_r)
+        for i in range(1, len(x_df) + 1):
+            comb_i = list(combinations(x_df, i))
+            all_combinations.extend(comb_i)
         return all_combinations
 
     # Method to create a mapping of models for each feature
@@ -345,8 +351,8 @@ class AdaptiveBridge:
                         "model": None,
                     }
                 }
-                combinations = self._all_combinations(x_df)
-                for combination in combinations:
+                features_combinations = self._all_combinations(x_df)
+                for combination in features_combinations:
                     combination = list(combination)
                     if len(combination) != len(x_df.columns):
                         x_df_droped = x_df.drop(combination, axis=1)
@@ -474,8 +480,7 @@ class AdaptiveBridge:
                         )
                     )
                     if (
-                        self.feature_importance[next(
-                            iter(model_map_l1_sorted))]
+                        self.feature_importance[next(iter(model_map_l1_sorted))]
                         / (np.sum(self.feature_importance, axis=0))
                     ) > self.importance_threshold:
                         self.feature_map["mandatory"][
@@ -586,8 +591,7 @@ class AdaptiveBridge:
             x_df = x_df.values.reshape(-1, 1)
         else:
             x_df = pd.DataFrame(x_df)
-        prediction = self.feature_map["adaptive"][feature]["model"].predict(
-            x_df)
+        prediction = self.feature_map["adaptive"][feature]["model"].predict(x_df)
         return prediction.flatten().astype(float)
 
     # Method to prepare the input data frame for prediction
@@ -605,16 +609,12 @@ class AdaptiveBridge:
         for feature in self.feature_map["mandatory"]:
             if feature not in x_df.columns:
                 raise MandatoryFeatureError(
-                    "A mandatory feature is completely missing: {}".format(
-                        feature)
+                    f"A mandatory feature is completely missing: {feature}"
                 )
-            else:
-                if x_df[feature].isna().any().any():
-                    raise MandatoryFeatureError(
-                        "A mandatory feature is partially missing: {} > (please check for NaN values in your dataset)".format(
-                            feature
-                        )
-                    )
+            if x_df[feature].isna().any().any():
+                raise MandatoryFeatureError(
+                    f"A mandatory feature is partially missing: {feature} > (please check for NaN values in your dataset)"
+                )
 
         # Handling of data distribution method
         for feature in self.feature_map["deviation"]:
@@ -631,15 +631,12 @@ class AdaptiveBridge:
         for feature in self.feature_map["adaptive"]:
             if feature not in x_df.columns:
                 x_df[feature] = self._adaptive_predict(
-                    x_df[self.feature_map["adaptive"]
-                         [feature]["features"]], feature
+                    x_df[self.feature_map["adaptive"][feature]["features"]], feature
                 )
             if x_df[feature].isna().any().any():
-                # pass  # TODO: Allow partial missing values for these features.
                 mask = x_df[feature].isna()
                 x_df.loc[mask, feature] = self._adaptive_predict(
-                    x_df.loc[mask][self.feature_map["adaptive"]
-                                   [feature]["features"]],
+                    x_df.loc[mask][self.feature_map["adaptive"][feature]["features"]],
                     feature,
                 )
 
@@ -663,7 +660,7 @@ class AdaptiveBridge:
         model = copy.deepcopy(self.model)
         ypred = model.predict(x_test_df)
         main_acc = 1 - self.accuracy_logic(y_test_df, ypred)
-        print("Non-AdaptiveBridge Model Accuracy: {}\n".format(main_acc))
+        print(f"Non-AdaptiveBridge Model Accuracy: {main_acc}\n")
 
         acc_results = []
         test_results = []
@@ -707,12 +704,12 @@ class AdaptiveBridge:
         features = list(self.feature_map["deviation"].keys()) + list(
             self.feature_map["adaptive"].keys()
         )
-        for r in range(1, len(features)):
+        for i in range(1, len(features)):
             acc_results = []
             test_results = []
             all_combinations = []
             list_combinations = []
-            all_combinations = combinations(features, r)
+            all_combinations = combinations(features, i)
             for comb in list(all_combinations):
                 list_combinations.append(list(comb))
             for feature in list_combinations:
@@ -723,11 +720,7 @@ class AdaptiveBridge:
                 acc_results.append(acc)
             avg = sum(acc_results) / len(acc_results)
             main_accuracy.append(avg)
-            print(
-                "Average AdaptiveBridge accuracy with {} missing features: {}".format(
-                    r, avg
-                )
-            )
+            print(f"Average AdaptiveBridge accuracy with {i} missing features: {avg}")
 
         x_bx = range(1, len(main_accuracy) + 1)
         plt.figure(

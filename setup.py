@@ -1,7 +1,20 @@
+"""
+    Package Name: AdaptiveBridge
+    Author: Netanel Eliav
+    Author Email: inetanel@me.com
+    License: MIT License
+    Version: Please refer to the repository for the latest version and updates.
+
+    This is the setup.py script for the AdaptiveBridge package.
+"""
+
 from setuptools import setup, find_packages
 
-with open("requirements.txt") as f:
-    requirements = f.read().splitlines()
+with open("requirements.txt", encoding="utf-8") as req_file:
+    requirements = req_file.read().splitlines()
+
+with open("README.md", encoding="utf-8") as read_file:
+    readme = read_file.read()
 
 setup(
     name="adaptivebridge",
@@ -15,50 +28,48 @@ setup(
     author_email="inetanel@me.com",
     url="https://github.com/inetanel/adaptivebridge",
     author_url="https://inetanel.com",
-    description="Revolutionizing ML adaptive modelling for handling missing features and data. The model can predict and fill data gaps in real-world scenarios.",
-    long_description=open("README.md").read(),
-    long_description_content_type='text/markdown',  # Specify Markdown format
+    description="Revolutionizing ML adaptive modelling for handling missing features and data. The model can predict missing data in real-world scenarios.",
+    long_description=readme,
+    long_description_content_type="text/markdown",  # Specify Markdown format
     keywords=[
-        'sklearn',
-        'scikit-learn',
-        'python',
-        'data analysis',
-        'machine learning',
-        'data visualization',
-        'python library',
-        'data processing',
-        'data science',
-        'data exploration',
-        'data manipulation',
-        'analytics',
-        'statistics',
-        'artificial intelligence',
-        'AI',
-        'feature engineering',
-        'data preprocessing',
-        'predictive modeling',
-        'classification',
-        'regression',
-        'missing data',
-        'data cleaning',
-        'data imputation',
-        'data quality',
-        'missing data analysis',
-        'data handling',
-        'data integrity',
-        'data cleansing',
-        'data wrangling',
-        'data validation',
-        'data completeness',
-        'impute missing values',
-        'data missingness',
-        'missing data detection',
-        'data quality assessment',
-        'data pre-processing tool',
+        "sklearn",
+        "scikit-learn",
+        "python",
+        "data analysis",
+        "machine learning",
+        "data visualization",
+        "python library",
+        "data processing",
+        "data science",
+        "data exploration",
+        "data manipulation",
+        "analytics",
+        "statistics",
+        "artificial intelligence",
+        "AI",
+        "feature engineering",
+        "data preprocessing",
+        "predictive modeling",
+        "classification",
+        "regression",
+        "missing data",
+        "data cleaning",
+        "data imputation",
+        "data quality",
+        "missing data analysis",
+        "data handling",
+        "data integrity",
+        "data cleansing",
+        "data wrangling",
+        "data validation",
+        "data completeness",
+        "impute missing values",
+        "data missingness",
+        "missing data detection",
+        "data quality assessment",
+        "data pre-processing tool",
     ],
-
     license="MIT",
-
     project_urls={
         "Author Website": "https://inetanel.com",
         "Documentation": "https://inetanel.github.io/adaptivebridge",

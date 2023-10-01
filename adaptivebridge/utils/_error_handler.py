@@ -11,9 +11,13 @@
 
 # Define a custom exception class
 class MandatoryFeatureError(Exception):
-    pass
+    """
+    Basic Error Handler class for missing mandatory features
+    """
 
 
 # Define a custom exception class
 class EngineeringFeatureError(Exception):
-    pass
+    """
+    Basic Error Handler class for missing feature-engineering features
+    """
