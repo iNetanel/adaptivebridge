@@ -16,4 +16,6 @@ rm -rf .pylint.d
 
 echo "Buidling package..."
 python setup.py sdist bdist_wheel
-autopep8 --in-place --recursive .
+
+echo "Packadge check..."
+twine check dist/*
