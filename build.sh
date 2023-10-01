@@ -1,3 +1,6 @@
+
+echo "AdaptiveBridge source packadge builder:"
+
 echo "Basic PEP 8 aligment.."
 autopep8 --in-place --recursive .
 
