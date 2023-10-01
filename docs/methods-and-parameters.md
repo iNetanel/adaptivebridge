@@ -163,13 +163,13 @@ Here is some key information that the benchmark provides:
 **Non-AdaptiveBridge Model Accuracy:**
 This shows the non-AdaptiveBridge model accuracy.
 ```bash
-Non-AdaptiveBridge Model Accuracy: 0.8808579769328666`
+Non-AdaptiveBridge Model Accuracy: 0.8999241048297895`
 ```
 
 AdaptiveBridge Features Accuracy Impact:
 This shows the impact of each feature when it's missing.
 
-![3cca6118-f9be-4312-9def-b248b0f9939d](https://github.com/iNetanel/adaptivebridge/assets/69385881/b568a867-adcf-488d-bedf-4f16dccdc2b4)
+![3cca6118-f9be-4312-9def-b248b0f9939d](/adaptivebridge/assets/images/red_wine_quality_rfi.png)
 
 **AdaptiveBridge Performance Matrix:**
 This shows the performance of AdaptiveBridge, the average accuracy for every number of features missing. This will include a plot that shows how the accuracy is dropping.
@@ -178,19 +178,16 @@ This shows the performance of AdaptiveBridge, the average accuracy for every num
 AdaptiveBridge performance matrix:
 This shows the performance of AdaptiveBridge, the average accuracy for every number of features missing.
 ---
-Average AdaptiveBridge accuracy with 1 missing features: 0.845135522250052
-Average AdaptiveBridge accuracy with 2 missing features: 0.8371119809276981
-Average AdaptiveBridge accuracy with 3 missing features: 0.8284419704508165
-Average AdaptiveBridge accuracy with 4 missing features: 0.8189357820863832
-Average AdaptiveBridge accuracy with 5 missing features: 0.8084686792445318
-Average AdaptiveBridge accuracy with 6 missing features: 0.7969622137206069
-Average AdaptiveBridge accuracy with 7 missing features: 0.7843961511171201
-Average AdaptiveBridge accuracy with 8 missing features: 0.7708000830336739
-Average AdaptiveBridge accuracy with 9 missing features: 0.7562430900808489
-Average AdaptiveBridge accuracy with 10 missing features: 0.7408298248251479
-Average AdaptiveBridge accuracy with 11 missing features: 0.7246676865310517
-Average AdaptiveBridge accuracy with 12 missing features: 0.7077357069383757
+Average AdaptiveBridge accuracy with 1 missing features: 0.8985245227370400
+Average AdaptiveBridge accuracy with 2 missing features: 0.8970789861014118
+Average AdaptiveBridge accuracy with 3 missing features: 0.8955704693977624
+Average AdaptiveBridge accuracy with 4 missing features: 0.8939804368062005
+Average AdaptiveBridge accuracy with 5 missing features: 0.8922916094583999
+Average AdaptiveBridge accuracy with 6 missing features: 0.890493262777842
+Average AdaptiveBridge accuracy with 7 missing features: 0.8885868798320217
+Average AdaptiveBridge accuracy with 8 missing features: 0.8865898996165795
+
 ```
-![9ba30d77-8557-4cb0-91fe-7ad0a95be5ce](https://github.com/iNetanel/adaptivebridge/assets/69385881/ebcab62f-6de7-467b-8ae5-921312bca9b0)
+![9ba30d77-8557-4cb0-91fe-7ad0a95be5ce](/adaptivebridge/assets/images/red_wine_quality_raccuracy.png)
 
 The performance of AdaptiveBridge should be according to the **AdaptiveBridge Performance Matrix** ONLY.

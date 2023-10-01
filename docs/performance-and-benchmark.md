@@ -10,9 +10,9 @@
 
 ## Benchmark Environment
 
-OS Version: Ubuntu 22.04 LTS
-CPU Architecture : arm64 M1
-Python Version: 3.11
+- OS Version: Ubuntu 22.04 LTS
+- CPU Architecture : arm64 M1
+- Python Version: 3.11
 
 Libraries Versions:
 - distfit: 1.6.11
@@ -71,11 +71,11 @@ Additionally, it's crucial to consider the impact of using `train_test_split` to
 
 ### Boston House Prices Dataset
 
-Model: Default LinearRegression()
-Model Parameters: None
-AdaptiveBridge Parameters: Default
-Number of Features: 12
-Fit Duraction: 20.7s
+- Model: Default LinearRegression()
+- Model Parameters: None
+- AdaptiveBridge Parameters: Default
+- Number of Features: 12
+- Fit Duraction: 20.7s
 
 ```bash
 Feature Sequence Dependencies:
@@ -138,11 +138,11 @@ Similarly, the same calculation was conducted for cases involving two, three, fo
 
 ### Iris Dataset
 
-Model: Default RandomForestRegressor()
-Model Parameters: None
-AdaptiveBridge Parameters: Default
-Number of Features: 4
-Fit Duraction: 0.6s
+- Model: Default RandomForestRegressor()
+- Model Parameters: None
+- AdaptiveBridge Parameters: Default
+- Number of Features: 4
+- Fit Duraction: 0.6s
 
 ```bash
 Feature Sequence Dependencies:
@@ -164,6 +164,7 @@ Prediction by Adaptive Model: (will be predict by adaptiv model)
 
 ![Iris Dataset Feature Impact](/adaptivebridge/assets/images/iris_dfi.png)
 
+```bash
 AdaptiveBridge Performance Matrix:
 Non-AdaptiveBridge Model Accuracy in %: **0.9347826086956522**
 
@@ -171,17 +172,19 @@ This shows the performance of AdaptiveBridge, the average accuracy for every num
 Average AdaptiveBridge accuracy in % with 1 missing features: **0.9349275362318842**
 Average AdaptiveBridge accuracy in % with 2 missing features: **0.9211594202898551**
 
+```
+
 ![Iris Dataset Accuracy Graph](/adaptivebridge/assets/images/iris_daccuracy.png)
 
 ---
 
 ### Red Wine Quality Dataset
 
-Model: Default Ridge()
-Model Parameters: None
-AdaptiveBridge Parameters: Default
-Number of Features: 11
-Fit Duraction: 1.1s
+- Model: Default Ridge()
+- Model Parameters: None
+- AdaptiveBridge Parameters: Default
+- Number of Features: 11
+- Fit Duraction: 1.1s
 
 ```bash
 Feature Sequence Dependencies:
@@ -231,11 +234,11 @@ Average AdaptiveBridge accuracy in % with 8 missing features: **0.88658989961657
 
 ### White Wine Quality Dataset
 
-Model: Default ElasticNet()
-Model Parameters: None
-AdaptiveBridge Parameters: Default
-Number of Features: 11
-Fit Duraction: 5.0s
+- Model: Default ElasticNet()
+- Model Parameters: None
+- AdaptiveBridge Parameters: Default
+- Number of Features: 11
+- Fit Duraction: 5.0s
 
 ```bash
 Feature Sequence Dependencies:
@@ -288,11 +291,11 @@ Average AdaptiveBridge accuracy in % with 10 missing features: **0.8818704160461
 
 ### Breast Cancer Wisconsin Diagnostic Dataset
 
-Model: Default RandomForestRegressor()
-Model Parameters: None
-AdaptiveBridge Parameters: correlation_threshold=0.85, importance_threshold=0.05 **Changed due to high CPU utilization and long training time**
-Number of Features: 30
-Fit Duraction: 5.7s
+- Model: Default RandomForestRegressor()
+- Model Parameters: None
+- AdaptiveBridge Parameters: correlation_threshold=0.85, importance_threshold=0.05 **Changed due to high CPU utilization and long training time**
+- Number of Features: 30
+- Fit Duraction: 5.7s
 
 ```bash
 Feature Sequence Dependencies:
