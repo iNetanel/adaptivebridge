@@ -10,9 +10,10 @@
 
 
 # Import necessary libraries
+import copy
+import time
 import numpy as np
 import pandas as pd
-import copy, time
 import matplotlib.pyplot as plt
 from itertools import combinations
 
@@ -65,7 +66,8 @@ class AdaptiveBridge:
         self.feature_engineering = None  # Placeholder for feature-enginnering list
         self.x_df = None  # Placeholder for feature data frame
         self.y_df = None  # Placeholder for target data frame
-        self.x_df_columns = None  # Placeholder for feature data frame columns (for order set in the future)
+        # Placeholder for feature data frame columns (for order set in the future)
+        self.x_df_columns = None
         self.feature_distribution = (
             None  # Placeholder for feature distribution statistics
         )
@@ -220,7 +222,8 @@ class AdaptiveBridge:
             feature_importances = self.model.feature_importances_
             return feature_importances.ravel()
 
-        raise ValueError(f"Model type {type(self.model)} not recognized or supported.")
+        raise ValueError(
+            f"Model type {type(self.model)} not recognized or supported.")
 
     # Method to calculate feature importance
     def _calculate_importance(self):
@@ -264,7 +267,8 @@ class AdaptiveBridge:
         feature_distribution = {}
         for feature in self.x_df.columns:
             # Check if data is binary (0 or 1)
-            feature_distribution[feature] = _fit_distribution(self.x_df[feature])
+            feature_distribution[feature] = _fit_distribution(
+                self.x_df[feature])
 
         return feature_distribution
 
@@ -470,7 +474,8 @@ class AdaptiveBridge:
                         )
                     )
                     if (
-                        self.feature_importance[next(iter(model_map_l1_sorted))]
+                        self.feature_importance[next(
+                            iter(model_map_l1_sorted))]
                         / (np.sum(self.feature_importance, axis=0))
                     ) > self.importance_threshold:
                         self.feature_map["mandatory"][
@@ -581,7 +586,8 @@ class AdaptiveBridge:
             x_df = x_df.values.reshape(-1, 1)
         else:
             x_df = pd.DataFrame(x_df)
-        prediction = self.feature_map["adaptive"][feature]["model"].predict(x_df)
+        prediction = self.feature_map["adaptive"][feature]["model"].predict(
+            x_df)
         return prediction.flatten().astype(float)
 
     # Method to prepare the input data frame for prediction
@@ -599,7 +605,8 @@ class AdaptiveBridge:
         for feature in self.feature_map["mandatory"]:
             if feature not in x_df.columns:
                 raise MandatoryFeatureError(
-                    "A mandatory feature is completely missing: {}".format(feature)
+                    "A mandatory feature is completely missing: {}".format(
+                        feature)
                 )
             else:
                 if x_df[feature].isna().any().any():
@@ -624,13 +631,15 @@ class AdaptiveBridge:
         for feature in self.feature_map["adaptive"]:
             if feature not in x_df.columns:
                 x_df[feature] = self._adaptive_predict(
-                    x_df[self.feature_map["adaptive"][feature]["features"]], feature
+                    x_df[self.feature_map["adaptive"]
+                         [feature]["features"]], feature
                 )
             if x_df[feature].isna().any().any():
                 # pass  # TODO: Allow partial missing values for these features.
                 mask = x_df[feature].isna()
                 x_df.loc[mask, feature] = self._adaptive_predict(
-                    x_df.loc[mask][self.feature_map["adaptive"][feature]["features"]],
+                    x_df.loc[mask][self.feature_map["adaptive"]
+                                   [feature]["features"]],
                     feature,
                 )
 

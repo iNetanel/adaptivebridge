@@ -41,7 +41,8 @@ def _pareto_choose_central_tendency(x_df):
 def _dweibull_choose_central_tendency(x_df):
     # Calculate the mean, median, and mode of the data based on the Double Weibull distribution
     c, loc, scale = dweibull.fit(x_df, floc=0)
-    mean_dweibull = scale * np.exp(np.log(2) / c)  # Mean of Double Weibull distribution
+    # Mean of Double Weibull distribution
+    mean_dweibull = scale * np.exp(np.log(2) / c)
     median_dweibull = scale * (np.log(2)) ** (
         1 / c
     )  # Median of Double Weibull distribution
@@ -233,7 +234,8 @@ def _fit_distribution(x_df):
 
         # Check if the data resembles integers and round it if so.
         is_integer_column = x_df.apply(
-            lambda x: int(x) == x if str(x).replace(".", "").isdigit() else False
+            lambda x: int(x) == x if str(x).replace(
+                ".", "").isdigit() else False
         )
 
         if is_integer_column.all():
@@ -297,5 +299,6 @@ def _fit_distribution(x_df):
         else:
             central_tendency_value = x_df.iloc[0]
 
-    feature_distribution = [best_distribution, central_tendency, central_tendency_value]
+    feature_distribution = [best_distribution,
+                            central_tendency, central_tendency_value]
     return feature_distribution
