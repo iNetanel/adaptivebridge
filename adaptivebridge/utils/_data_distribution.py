@@ -316,5 +316,6 @@ def _fit_distribution(x_df):
             central_tendency,
         ) = _continuous_central_tendency_set(x_df)
 
-    feature_distribution = [best_distribution, central_tendency, central_tendency_value]
+    feature_distribution = [best_distribution,
+                            central_tendency, central_tendency_value]
     return feature_distribution

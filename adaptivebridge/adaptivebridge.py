@@ -227,7 +227,8 @@ class AdaptiveBridge:
             feature_importances = self.model.feature_importances_
             return feature_importances.ravel()
 
-        raise ValueError(f"Model type {type(self.model)} not recognized or supported.")
+        raise ValueError(
+            f"Model type {type(self.model)} not recognized or supported.")
 
     # Method to calculate feature importance
     def _calculate_importance(self):
@@ -271,7 +272,8 @@ class AdaptiveBridge:
         feature_distribution = {}
         for feature in self.x_df.columns:
             # Check if data is binary (0 or 1)
-            feature_distribution[feature] = _fit_distribution(self.x_df[feature])
+            feature_distribution[feature] = _fit_distribution(
+                self.x_df[feature])
 
         return feature_distribution
 
@@ -477,7 +479,8 @@ class AdaptiveBridge:
                         )
                     )
                     if (
-                        self.feature_importance[next(iter(model_map_l1_sorted))]
+                        self.feature_importance[next(
+                            iter(model_map_l1_sorted))]
                         / (np.sum(self.feature_importance, axis=0))
                     ) > self.importance_threshold:
                         self.feature_map["mandatory"][
@@ -588,7 +591,8 @@ class AdaptiveBridge:
             x_df = x_df.values.reshape(-1, 1)
         else:
             x_df = pd.DataFrame(x_df)
-        prediction = self.feature_map["adaptive"][feature]["model"].predict(x_df)
+        prediction = self.feature_map["adaptive"][feature]["model"].predict(
+            x_df)
         return prediction.flatten().astype(float)
 
     # Method to prepare the input data frame for prediction
@@ -628,12 +632,14 @@ class AdaptiveBridge:
         for feature in self.feature_map["adaptive"]:
             if feature not in x_df.columns:
                 x_df[feature] = self._adaptive_predict(
-                    x_df[self.feature_map["adaptive"][feature]["features"]], feature
+                    x_df[self.feature_map["adaptive"]
+                         [feature]["features"]], feature
                 )
             if x_df[feature].isna().any().any():
                 mask = x_df[feature].isna()
                 x_df.loc[mask, feature] = self._adaptive_predict(
-                    x_df.loc[mask][self.feature_map["adaptive"][feature]["features"]],
+                    x_df.loc[mask][self.feature_map["adaptive"]
+                                   [feature]["features"]],
                     feature,
                 )
 
@@ -717,7 +723,8 @@ class AdaptiveBridge:
                 acc_results.append(acc)
             avg = sum(acc_results) / len(acc_results)
             main_accuracy.append(avg)
-            print(f"Average AdaptiveBridge accuracy with {i} missing features: {avg}")
+            print(
+                f"Average AdaptiveBridge accuracy with {i} missing features: {avg}")
 
         x_bx = range(1, len(main_accuracy) + 1)
         plt.figure(
