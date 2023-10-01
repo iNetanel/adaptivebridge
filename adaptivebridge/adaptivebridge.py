@@ -38,7 +38,7 @@ MIN_ACCURACY = 0.5
 DEFAULT_ACCURACY_SELECTION = 0.95
 IMPORTANCE_THRESHOLD = 0.1
 ACCURACY_LOGIC = _mean_absolute_percentage_error
-FEATURE_ENGINEERING = ()
+FEATURE_ENGINEERING = None
 
 
 # Define a class named AdaptiveBridge
@@ -136,16 +136,19 @@ class AdaptiveBridge:
             None
         """
 
-        self.feature_engineering = feature_engineering
-        for feature in self.feature_engineering:
-            if feature not in x_df.columns:
-                raise EngineeringFeatureError(
-                    f"User-defined feature-engineering feature required and is completely missing: {feature}"
-                )
-            if x_df[feature].isna().any().any():
-                raise EngineeringFeatureError(
-                    f"User-defined feature-engineering feature is partially missing: {feature} > (please check for NaN values in your dataset)"
-                )
+        if feature_engineering is None:
+            self.feature_engineering = []
+        else:
+            self.feature_engineering = feature_engineering
+            for feature in self.feature_engineering:
+                if feature not in x_df.columns:
+                    raise EngineeringFeatureError(
+                        f"User-defined feature-engineering feature required and is completely missing: {feature}"
+                    )
+                if x_df[feature].isna().any().any():
+                    raise EngineeringFeatureError(
+                        f"User-defined feature-engineering feature is partially missing: {feature} > (please check for NaN values in your dataset)"
+                    )
 
         x_df = _convert_to_dataframe(
             x_df, "dataframe"
