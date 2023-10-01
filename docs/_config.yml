@@ -12,6 +12,7 @@ title: AdaptiveBridge's Documentation
 # Your name to show in the footer
 author: Netanel Eliav
 
+# Plugins
 plugins:
   - jemoji
   - jekyll-avatar
