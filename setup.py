@@ -16,11 +16,18 @@ with open("requirements.txt", encoding="utf-8") as req_file:
 with open("README.md", encoding="utf-8") as read_file:
     readme = read_file.read()
 
+with open("CHANGELOG.md", "r+") as changelog:
+    adaptivebridge_version = changelog.read().split(
+        '---')[0].split('- **')[-1][:5]
+
+
 setup(
     name="adaptivebridge",
-    version="0.9.0",
+    version=adaptivebridge_version,
     packages=find_packages(),
     install_requires=requirements,
+    extras_require={"dev": ["pytest>=7.4.2", "twine>4.0.2"],
+                    },
     include_package_data=True,
     zip_safe=True,
     python_requires=">=3.6",
