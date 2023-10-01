@@ -165,7 +165,7 @@ setup.py
 .DS_Store
 
 #FeatureBridge
-test.py
+notes.txt
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

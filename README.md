@@ -1,8 +1,8 @@
 # FeatureBridge
 
-![Project Image](http://inetanel.com/wp-content/uploads/FeatureBridge-logo-small.jpg)
+![FeatureBridge Logo](https://github.com/inetanel/featurebridge/docs/assets/images/logo.jpeg)
 
-[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/iNetanel/featurebridge)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/inetanel/featurebridge)
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 - **Project Name:** FeatureBridge
@@ -10,8 +10,8 @@
 - **Author:** Netanel Eliav
 - **Author Website:** [https://inetanel.com](https://inetanel.com)
 - **Author Email:** [inetanel@me.com](mailto:inetanel@me.com)
-- **Documentation:** [https://inetanel.github.io/featurebridge](https://inetanel.github.io/featurebridge)
-- **Issue Tracker:** [https://github.com/iNetanel/featurebridge/issues](https://github.com/iNetanel/featurebridge/issues)
+- **Documentation:** [Click Here](https://inetanel.github.io/featurebridge)
+- **Issue Tracker:** [Click Here](https://github.com/inetanel/featurebridge/issues)
 
 
 ## Overview
@@ -38,11 +38,16 @@ Follow these steps to get started with FeatureBridge:
 1. Clone this repository:
 
    ```shell
-   git clone https://github.com/iNetanel/featurebridge.git
+   pip install featurebridge
+   
+   ```
+
+   ```shell
+   # Alternatively 
+   git clone https://github.com/inetanel/featurebridge.git
    pip install -r requirements.txt
    
-   #OR
-   pip install featurebridge
+   ```
    
 ## Dependencies 
 
