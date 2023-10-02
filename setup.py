@@ -81,6 +81,7 @@ setup(
     project_urls={
         "Author Website": "https://inetanel.com",
         "Documentation": "https://inetanel.github.io/adaptivebridge",
+        "Changelog": "https://github.com/iNetanel/adaptivebridge/blob/main/CHANGELOG.md",
         "Source Code": "https://github.com/inetanel/adaptivebridge",
         "Issue Tracker": "https://github.com/inetanel/adaptivebridge/issues",
     },
