@@ -697,7 +697,7 @@ class AdaptiveBridge:
         plt.show()
 
         print(
-            "AdaptiveBridge Performance Matrix:\nThis shows the performance of AdaptiveBridge, the average accuracy for every number of features missing.\n---"
+            "AdaptiveBridge Performance Matrix:\nThis shows the performance of AdaptiveBridge, the average accuracy for every number of missing features.\n---"
         )
         acc_results = []
         test_results = []
