@@ -154,7 +154,7 @@ cython_debug/
 
 # Data
 *.csv
-*.xls
+*.xlsx
 
 # Jupyter
 *.ipynb
