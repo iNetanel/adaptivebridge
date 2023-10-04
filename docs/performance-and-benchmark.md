@@ -361,7 +361,7 @@ Average AdaptiveBridge accuracy in % with 9 missing features: **0.85713476803972
 Average AdaptiveBridge accuracy in % with 10 missing features: **0.8535726477516224**
 Average AdaptiveBridge accuracy in % with 11 missing features: **0.8496700447785884**
 Average AdaptiveBridge accuracy in % with 12 missing features: **0.8462292668989493**
-Average AdaptiveBridge accuracy in % with 13 missing features: **0.8892630941206685**
+Average AdaptiveBridge accuracy in % with 13 missing features: **0.8452630941206685**
 Average AdaptiveBridge accuracy in % with 14 missing features: **0.8431958162996332**
 Average AdaptiveBridge accuracy in % with 15 missing features: **0.8405121215973477**
 Average AdaptiveBridge accuracy in % with 16 missing features: **0.8388349740520229**
