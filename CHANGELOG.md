@@ -7,7 +7,7 @@
 # AdaptiveBridge CHANGELOG
  - Package Name: AdaptiveBridge
  - Author: Netanel Eliav
- - Author Email: inetanel@me.com
+ - Author Email: netanel.eliav@gmail.com
  - License: MIT License
 
 All notable changes to this package will be documented in this file.
@@ -34,7 +34,7 @@ enhancement
 ### Changelog:
 
 - **0.9.1 - Alpha** [021023] (Netanel Eliav):
-  1. Bug Fix - Fix Images and Documentation. nbow it will show the logos.
+  1. Bug Fix - Fix Images and Documentation. now it will show the logos.
   2. Enhancement - Improvement to the PyPi package builder (build.sh). now it will take the version fro the CHANGELOG.md dynamicly.
   3. Enhancement - Added the changelog to the PyPi package page.
 ---
