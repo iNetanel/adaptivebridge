@@ -3,7 +3,7 @@
 """
     Package Name: AdaptiveBridge
     Author: Netanel Eliav
-    Author Email: inetanel@me.com
+    Author Email: netanel.eliav@gmail.com
     License: MIT License
     Version: Please refer to the repository for the latest version and updates.
 """
@@ -21,12 +21,20 @@ def _convert_to_dataframe(obj, data_type):
         # If it's a NumPy array, convert it to a Pandas DataFrame or Pandas Series
         if data_type == "dataframe":
             return pd.DataFrame(obj)
-        return pd.Series(obj)
+        if obj.ndim == 1:
+            return pd.Series(obj)
+        else:
+            raise ValueError(
+                f"Y vector should be one-dimensional and it's {obj.ndim} dimensions.")
     if isinstance(obj, pd.DataFrame):
         # Return a DataFrame for features, and Series for target
         if data_type == "dataframe":
             return obj
-        return pd.Series(obj)
+        if obj.shape[1] == 1:
+            return obj.iloc[:, 0]
+        else:
+            raise ValueError(
+                f"Y vector should be one-dimensional and it's {obj.shape[1]} dimensions.")
     if isinstance(obj, pd.Series):
         # Return a DataFrame for features, and Series for target
         if data_type == "dataframe":
@@ -36,20 +44,32 @@ def _convert_to_dataframe(obj, data_type):
         # If it's a Python list, convert it to a DataFrame for features and Series for target
         if data_type == "dataframe":
             return pd.DataFrame(obj)
-        return pd.Series(obj)
+        if not any(isinstance(item, (list, dict)) for item in obj):
+            return pd.Series(obj)
+        else:
+            dimensions = sum(isinstance(item, (list, dict)) for item in obj)
+            raise ValueError(
+                f"Y vector should be one-dimensional and it's {dimensions} dimensions.")
     if isinstance(obj, dict):
         # If it's a dictionary, convert it to a DataFrame using DictVectorizer
-        if data_type == "dataframe":
-            vec = DictVectorizer(sparse=False)
-            return pd.DataFrame(vec.fit_transform(obj))
         vec = DictVectorizer(sparse=False)
-        return pd.Series(vec.fit_transform(obj))
-    if isinstance(obj, (sparse.csr.csr_matrix, sparse.csc.csc_matrix)):
+        if data_type == "dataframe":
+            return pd.DataFrame(vec.fit_transform(obj))
+        if len(obj) == 1:
+            return pd.Series(vec.fit_transform(obj)[0])
+        else:
+            raise ValueError(
+                f"Y vector should be one-dimensional and it's {len(obj)} dimensions.")
+    if isinstance(obj, (sparse.csr_matrix, sparse.csc_matrix)):
         # If it's a sparse matrix, convert it to a Pandas DataFrame
         if data_type == "dataframe":
             return pd.DataFrame(obj.toarray())
-        return pd.Series(obj.toarray())
+        if obj.shape[0] == 1:
+            return pd.Series(obj.toarray()[0])
+        else:
+            raise ValueError(
+                f"Y vector should be one-dimensional and it's {obj.shape[0]} dimensions.")
     raise ValueError(
         f"Unsupported data type {type(obj)}. Supported types are NumPy arrays,"
-        " Pandas DataFrames, Python lists, dictionaries, and sparse matrices."
+        " Pandas DataFrames, Python lists, Dictionaries, and Sparse Matrices."
     )
