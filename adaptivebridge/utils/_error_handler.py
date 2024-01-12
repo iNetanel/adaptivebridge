@@ -3,7 +3,7 @@
 """
     Package Name: AdaptiveBridge
     Author: Netanel Eliav
-    Author Email: inetanel@me.com
+    Author Email: netanel.eliav@gmail.com
     License: MIT License
     Version: Please refer to the repository for the latest version and updates.
 """

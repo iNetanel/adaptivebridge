@@ -9,7 +9,7 @@
 - **License:** MIT License
 - **Author:** Netanel Eliav
 - **Author Website:** [https://inetanel.com](https://inetanel.com)
-- **Author Email:** [inetanel@me.com](mailto:inetanel@me.com)
+- **Author Email:** [netanel.eliav@gmail.com](mailto:netanel.eliav@gmail.com)
 - **Documentation:** [Click Here](https://inetanel.github.io/adaptivebridge)
 - **Issue Tracker:** [Click Here](https://github.com/iNetanel/adaptivebridge/issues)
 
