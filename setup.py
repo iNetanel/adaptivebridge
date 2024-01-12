@@ -1,7 +1,7 @@
 """
     Package Name: AdaptiveBridge
     Author: Netanel Eliav
-    Author Email: inetanel@me.com
+    Author Email: netanel.eliav@gmail.com
     License: MIT License
     Version: Please refer to the repository for the latest version and updates.
 
@@ -33,7 +33,7 @@ setup(
     zip_safe=True,
     python_requires=">=3.7",
     author="Netanel Eliav",
-    author_email="inetanel@me.com",
+    author_email="netanel.eliav@gmail.com",
     url="https://github.com/inetanel/adaptivebridge",
     author_url="https://inetanel.com",
     description="Revolutionizing ML adaptive modelling for handling missing features and data. The model can predict missing data in real-world scenarios.",
