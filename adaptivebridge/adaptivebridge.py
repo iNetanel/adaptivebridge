@@ -1,13 +1,13 @@
 #!/bin/env python
 # adaptivebridge/adaptivebridge.py
-"""
-    Package Name: AdaptiveBridge
-    Author: Netanel Eliav
-    Author Email: netanel.eliav@gmail.com
-    License: MIT License
-    Version: Please refer to the repository for the latest version and updates.
-"""
 
+"""
+Package Name: AdaptiveBridge
+Author: Netanel Eliav
+Author Email: netanel.eliav@gmail.com
+License: MIT License
+Version: Please refer to the repository for the latest version and updates.
+"""
 
 # Import necessary libraries
 import copy
@@ -71,8 +71,8 @@ class AdaptiveBridge:
         )  # Create a deep copy of the provided machine learning model
         self.correlation_threshold = correlation_threshold
         self.min_accuracy = min_accuracy
-        self.importance_threshold = importance_threshold
         self.default_accuracy_selection = default_accuracy_selection
+        self.importance_threshold = importance_threshold
         self.accuracy_logic = accuracy_logic
         self.feature_engineering = None  # Placeholder for feature-enginnering list
         self.x_df = None  # Placeholder for feature data frame
@@ -109,7 +109,7 @@ class AdaptiveBridge:
             - Minimum Accuracy = {self.min_accuracy}
             - Default Accuracy Selection = {self.default_accuracy_selection}
             - Importance Threshold = {self.importance_threshold}
-            - Accuracy Logic = {self.accuracy_logic}
+            - Accuracy Logic = {self.accuracy_logic.__name__}
          - Model:
             - Trained = {self.model_map is not None}
             - Training UTC Time = {self.training_time}
@@ -191,19 +191,17 @@ class AdaptiveBridge:
         Returns:
             array: Predicted values.
         """
-
-        x_df = self.bridge(x_df)
-
         for feature in self.feature_map["engineering"]:
             if feature not in x_df.columns:
                 raise EngineeringFeatureError(
                     f"User-defined feature-engineering feature required and is completely missing: {feature}"
                 )
-            if x_df[feature].isna().any().any():
+            elif x_df[feature].isna().any().any():
                 raise EngineeringFeatureError(
                     f"User-defined feature-engineering feature is partially missing: {feature} > (please check for NaN values in your dataset)"
                 )
 
+        x_df = self.bridge(x_df)
         return self.model.predict(x_df)
 
     def _get_model_coefficients(self):
@@ -248,7 +246,7 @@ class AdaptiveBridge:
         return np.abs(self._get_model_coefficients() * im_df)
 
     # Method to print feature importance scores
-    def feature_importance_score(self):
+    def feature_importance_score(self, x_df):
         """
         Summarize feature importance scores.
 
@@ -256,7 +254,7 @@ class AdaptiveBridge:
             None
         """
 
-        features_list = self.x_df.columns
+        features_list = x_df.columns
         for i, j in enumerate(self.feature_importance):
             print("Feature: %s (%0d), Score: %.5f" % (features_list[i], i, j))
 
@@ -569,7 +567,7 @@ class AdaptiveBridge:
             "engineering": {},
             "mandatory": {},
             "deviation": {},
-            "adaptive": {},
+            "adaptive": {}
         }
         self._mandatory_and_distribution()
         self._adaptive_model()
@@ -620,13 +618,10 @@ class AdaptiveBridge:
         # Handling of data distribution method
         for feature in self.feature_map["deviation"]:
             if feature not in x_df.columns:
-                x_df[feature] = self.feature_map["deviation"][feature]["distribution"][
-                    2
-                ]
+                x_df[feature] = self.feature_map["deviation"][feature]["distribution"][2]
             if x_df[feature].isna().any().any():
                 x_df[feature] = x_df[feature].fillna(
-                    self.feature_map["deviation"][feature]["distribution"][2]
-                )
+                    self.feature_map["deviation"][feature]["distribution"][2])
 
         # Handling missing features with adaptive prediction
         for feature in self.feature_map["adaptive"]:
