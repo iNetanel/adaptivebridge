@@ -1,9 +1,6 @@
 
 echo "AdaptiveBridge source packadge builder:"
 
-echo "Basic PEP 8 aligment.."
-autopep8 --in-place --recursive .
-
 echo "Cleaning previous builds first.."
 rm -rf dist
 rm -rf build
@@ -13,6 +10,15 @@ rm -rf adaptivebridge/__pycache__
 rm -rf adaptivebridge/.pylint.d
 rm -rf .pytest_cache
 rm -rf .pylint.d
+
+echo "Run components tests..."
+pytest --cov=adaptivebridge
+
+echo "Basic PEP 8 aligment.."
+autopep8 --in-place --recursive .
+
+echo "Create requirements file..."
+pipreqs .
 
 echo "Buidling package..."
 python setup.py sdist bdist_wheel
