@@ -36,7 +36,7 @@ The Changelog trailer accepts the following values:
     - Add uni-tests and L1 (E2E) tests meeting production ready, reaching 98% code-coverage.
     > Note: this version is initial pre-production beta release version, please make sure to check the documentation.
   2. Enhancement:
-    - Add _mode_selector method for district and continuous distributions. Now it will handeled better multi-mode edge cases.
+    - Add _mode_selector method for district and continuous distributions. Now it will handled better multi-mode edge cases.
     - Add _DistributionType class to manage better all type of data distributions.
     - Add comments for everything for better code review.
   3. Remove:
@@ -44,7 +44,7 @@ The Changelog trailer accepts the following values:
   4. Bug Fix:
     - Fix __str__ to show Accuracy Logic name and not object name.
     - Fix predict method raise an error in edge cases, now it will execute feature engineering mis-match check first before executing bridge method.
-    - Fix feature_importance_score method not executble, now it will required dataset as parameter.
+    - Fix feature_importance_score method not executable, now it will required dataset as parameter.
   5. Change:
    - Change Author email to be updated one.
 ---
