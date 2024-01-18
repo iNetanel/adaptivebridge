@@ -1,7 +1,8 @@
-distfit==1.6.11
+distfit==1.7.3
 matplotlib==3.8.0
-numpy==1.26.0
-pandas==2.1.0
-scikit-learn==1.3.0
-scipy==1.11.2
-setuptools>=68.2.2
+numpy==1.26.3
+pandas==2.1.4
+pytest==7.4.0
+scikit_learn==1.3.2
+scipy==1.11.4
+setuptools==68.2.2

@@ -1,11 +1,9 @@
 """
-    Package Name: AdaptiveBridge
-    Author: Netanel Eliav
-    Author Email: netanel.eliav@gmail.com
-    License: MIT License
-    Version: Please refer to the repository for the latest version and updates.
-
-    This is the setup.py script for the AdaptiveBridge package.
+Package Name: AdaptiveBridge
+Author: Netanel Eliav
+Author Email: netanel.eliav@gmail.com
+License: MIT License
+Version: Please refer to the repository for the latest version and updates.
 """
 
 from setuptools import setup, find_packages
@@ -86,7 +84,7 @@ setup(
         "Issue Tracker": "https://github.com/inetanel/adaptivebridge/issues",
     },
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
         "Intended Audience :: Information Technology",
