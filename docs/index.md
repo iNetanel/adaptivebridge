@@ -50,10 +50,12 @@ With AdaptiveBridge, integrating this powerful tool into your AI and machine lea
 ## Dependencies
 
 - Sklearn
+- Scipy
 - NumPy
 - Pandas
 - Distfit
 - Matplotlib
+- Pytest (For production use only)
 
 ## Contribution
 
