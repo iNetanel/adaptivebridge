@@ -673,19 +673,29 @@ class AdaptiveBridge:
             acc = 1 - self.accuracy_logic(y_test_df, ypred)
             acc_results.append(acc)
 
+        feature_colors = {}
+        for feature in self.feature_map["mandatory"].keys():
+            feature_colors[feature] = "#1f77b4"
+
+        features = list(self.feature_map["mandatory"].keys()) + list(self.feature_map["deviation"].keys()) + list(
+            self.feature_map["adaptive"].keys())
+        
         results = main_acc - acc_results
         modified_results = [0 if x < 0 else x for x in results]
+        # Ensure modified_results has the same length as features
+        modified_results += [0] * (len(features) - len(modified_results))
+
+        plt.figure(figsize=(len(features) * 2, 6))
+        bars = plt.bar(features, modified_results, color="#2ca02c")
+
+        # Assign colors to each bar based on the feature_colors dictionary
+        for bar, feature in zip(bars, features):
+            if feature in feature_colors:
+                bar.set_color(feature_colors[feature])
 
         print(
-            "AdaptiveBridge feature accuracy impact:\nThis shows the impact of each feature when it's missing\n(Higher % number means higher impact in %)"
+            "AdaptiveBridge feature accuracy impact:\nThis shows the impact of each feature when it's missing\n(Higher % number means higher impact in %)\nBlue means mandatory feature"
         )
-        features = list(self.feature_map["deviation"].keys()) + list(
-            self.feature_map["adaptive"].keys()
-        )
-        plt.figure(
-            figsize=(len(features) * 2, 6)
-        )  # Adjust the width and height as needed
-        plt.bar(features, (modified_results))
         plt.xlabel("Feature Name")
         plt.ylabel("Accuracy Impact")
         plt.title("Features and their accuracy impact in %")
