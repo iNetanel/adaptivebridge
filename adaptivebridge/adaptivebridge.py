@@ -679,7 +679,7 @@ class AdaptiveBridge:
 
         features = list(self.feature_map["mandatory"].keys()) + list(self.feature_map["deviation"].keys()) + list(
             self.feature_map["adaptive"].keys())
-        
+
         results = main_acc - acc_results
         modified_results = [0 if x < 0 else x for x in results]
         # Ensure modified_results has the same length as features
