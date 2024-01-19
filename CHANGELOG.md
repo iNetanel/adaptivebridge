@@ -27,39 +27,47 @@ The Changelog trailer accepts the following values:
 
 ### Unreleased:
 
-> - Multi model selection. this feature will be release in the next version.
+> - Multi-model selection. This feature will be released in the next version.
 
 ### Changelog:
 
+- **1.0.1 - Beta** [190123] (Netanel Eliav):
+  1. Bug Fix: Fixed benchmark not showing all features.
+  2. Enhancement: Added colors to graphs; now mandatory features are in blue, and the rest are in green.
+
+---
 - **1.0.0 - Beta** [180123] (Netanel Eliav):
   1. Feature:
-    - Add uni-tests and L1 (E2E) tests meeting production ready, reaching 98% code-coverage.
-    > Note: this version is initial pre-production beta release version, please make sure to check the documentation.
+    - Added unit tests and L1 (E2E) tests meeting production-ready standards, reaching 98% code coverage.
+    > Note: This version is the initial pre-production beta release version; please make sure to check the documentation.
   2. Enhancement:
-    - Add _mode_selector method for district and continuous distributions. Now it will handled better multi-mode edge cases.
-    - Add _DistributionType class to manage better all type of data distributions.
-    - Add comments for everything for better code review.
+    - Added `_mode_selector` method for district and continuous distributions. Now it will handle multi-mode edge cases better.
+    - Added `_DistributionType` class to manage all types of data distributions more effectively.
+    - Added comments for everything for better code review.
   3. Remove:
-    - Remove all unique central tendency for each data distribution. now it will have a new generic algorithm for all type of distribution.
+    - Removed all unique central tendency for each data distribution. Now it will have a new generic algorithm for all types of distribution.
   4. Bug Fix:
-    - Fix __str__ to show Accuracy Logic name and not object name.
-    - Fix predict method raise an error in edge cases, now it will execute feature engineering mis-match check first before executing bridge method.
-    - Fix feature_importance_score method not executable, now it will required dataset as parameter.
+    - Fixed `__str__` to show Accuracy Logic name and not object name.
+    - Fixed `predict` method raising an error in edge cases; now it will execute feature engineering mismatch check first before executing the bridge method.
+    - Fixed `feature_importance_score` method not executable; now it requires a dataset as a parameter.
   5. Change:
-   - Change Author email to be updated one.
+    - Changed author email to be the updated one.
+
 ---
 - **0.9.1 - Alpha** [021023] (Netanel Eliav):
-  1. Bug Fix - Fix Images and Documentation. now it will show the logos.
-  2. Enhancement - Improvement to the PyPi package builder (build.sh). now it will take the version fro the CHANGELOG.md dynamicly.
-  3. Enhancement - Added the changelog to the PyPi package page.
+  1. Bug Fix: Fixed images and documentation; now it will show the logos.
+  2. Enhancement: Improved the PyPi package builder (build.sh); now it will take the version from the CHANGELOG.md dynamically.
+  3. Enhancement: Added the changelog to the PyPi package page.
+
 ---
 - **0.9.0 - Alpha** [011023] (Netanel Eliav):
-  > Note: this version is initial official alpha version.
+  > Note: This version is the initial official alpha version.
   1. Alpha version.
-    - Change - PEP 8 for all files.
-    - Feature - support for feature engineering.
-    - Remove - Pyramid benchmark was remove due to low value and accuracy.
-    - Enhancement - Add documentation.
+    - Change: PEP 8 for all files.
+    - Feature: Support for feature engineering.
+    - Remove: Pyramid benchmark was removed due to low value and accuracy.
+    - Enhancement: Added documentation.
+
 ---
 - **0.8.0 - Alpha** [130923] (Netanel Eliav):
-  > Note: this version is initial pre-alpha release version, please make sure to check the documentation.
+  > Note: This version is the initial pre-alpha release version; please make sure to check the documentation.
