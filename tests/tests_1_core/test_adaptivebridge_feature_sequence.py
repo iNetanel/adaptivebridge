@@ -45,7 +45,7 @@ def test_feature_sequence_without_none(test_data, capsys, monkeypatch):
     x_df = test_data["x_df"]
     x_df["radius2"] = x_df["radius"]**2
     # Fit the model with the test data and specified feature engineering
-    ab.fit(test_data["x_df"], test_data["y_df"],
+    ab.fit(x_df, test_data["y_df"],
            feature_engineering=["radius2"])
 
     # Run the feature_sequence function
@@ -58,9 +58,10 @@ def test_feature_sequence_without_none(test_data, capsys, monkeypatch):
     # Replace these with the actual values or patterns you expect
     assert "Feature Sequence Dependencies" in captured.out
     assert "User-defined feature-engineering features: (Must be provided by the user)" in captured.out
+    assert "Mutually Exclusive features: (will use mutually exclusive feature-map)" in captured.out
     assert "Mandatory: (Must be provided by the user)" in captured.out
     assert "Data Distribution Method: (data distribution method will be used and not prediction)" in captured.out
-    assert "Prediction by Adaptive Model: (will be predict by adaptiv model)" in captured.out
+    assert "Prediction by Adaptive Model: (will be predict by adaptive model)" in captured.out
 
 
 def test_feature_sequence_with_none(test_data, capsys, monkeypatch):
@@ -75,7 +76,9 @@ def test_feature_sequence_with_none(test_data, capsys, monkeypatch):
     ab = adaptivebridge.AdaptiveBridge(LinearRegression(
     ), correlation_threshold=1, min_accuracy=1, importance_threshold=1)
     # Fit the model with the test data
-    ab.fit(test_data["x_df"], test_data["y_df"])
+    x_df = test_data["x_df"]
+    x_df = x_df.drop(["DocT"], axis=1)
+    ab.fit(x_df, test_data["y_df"])
 
     # Run the feature_sequence function
     ab.feature_sequence()
@@ -87,9 +90,10 @@ def test_feature_sequence_with_none(test_data, capsys, monkeypatch):
     # Replace these with the actual values or patterns you expect
     assert "Feature Sequence Dependencies" in captured.out
     assert "User-defined feature-engineering features: (Must be provided by the user)\n - None" in captured.out
+    assert "Mutually Exclusive features: (will use mutually exclusive feature-map)\n - None" in captured.out
     assert "Mandatory: (Must be provided by the user)\n - None" in captured.out
     assert "Data Distribution Method: (data distribution method will be used and not prediction)" in captured.out
-    assert "Prediction by Adaptive Model: (will be predict by adaptiv model)\n - None" in captured.out
+    assert "Prediction by Adaptive Model: (will be predict by adaptive model)\n - None" in captured.out
 
 
 def test_feature_sequence_without_mandatory(test_data, capsys, monkeypatch):
@@ -116,9 +120,10 @@ def test_feature_sequence_without_mandatory(test_data, capsys, monkeypatch):
     # Replace these with the actual values or patterns you expect
     assert "Feature Sequence Dependencies" in captured.out
     assert "User-defined feature-engineering features: (Must be provided by the user)" in captured.out
+    assert "Mutually Exclusive features: (will use mutually exclusive feature-map)" in captured.out
     assert "Mandatory: (Must be provided by the user)" in captured.out
     assert "Data Distribution Method: (data distribution method will be used and not prediction)\n - None" in captured.out
-    assert "Prediction by Adaptive Model: (will be predict by adaptiv model)" in captured.out
+    assert "Prediction by Adaptive Model: (will be predict by adaptive model)" in captured.out
 
 
 if __name__ == "__main__":

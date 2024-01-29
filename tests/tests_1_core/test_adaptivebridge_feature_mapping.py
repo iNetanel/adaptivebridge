@@ -30,6 +30,7 @@ def test_feature_mapping():
         # Define the expected feature map
         feature_map = {
             "engineering": {},
+            "mutually_exclusive": {},
             "mandatory": {},
             "deviation": {},
             "adaptive": {}

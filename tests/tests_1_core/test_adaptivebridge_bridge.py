@@ -15,7 +15,7 @@ import numpy as np
 import pytest
 import re
 import adaptivebridge.adaptivebridge as adaptivebridge
-from adaptivebridge.utils import MandatoryFeatureError
+from adaptivebridge.utils import MandatoryFeatureError, MutuallyFeatureError
 from sklearn.linear_model import LinearRegression
 
 
@@ -100,6 +100,82 @@ def test_bridge_missing_full_feature_adaptive(test_data):
     assert new_x_df.size == test_data["x_df"].size
 
 
+def test_bridge_missing_full_mutually_feature_diff(test_data):
+    # Create an instance of AdaptiveBridge with LinearRegression model and custom min_accuracy, correlation_threshold
+    ab = adaptivebridge.AdaptiveBridge(
+        LinearRegression(), min_accuracy=0.001, correlation_threshold=0.01)
+    # Fit the model with the test data
+    ab.fit(test_data["x_df"], test_data["y_df"])
+    # Remove 'circum' feature from x_df
+    x_df = test_data["x_df"].drop(["DocT"], axis=1)
+    # Perform bridging operation on modified x_df
+    new_x_df = ab.bridge(x_df)
+
+    # Assertions
+    assert not new_x_df.isnull().values.any()
+    assert not new_x_df.isnull().any(axis=0).any()
+    assert new_x_df.size == test_data["x_df"].size
+
+
+def test_bridge_missing_partial_mutually_feature_diff(test_data):
+    # Create an instance of AdaptiveBridge with LinearRegression model and custom min_accuracy, correlation_threshold
+    ab = adaptivebridge.AdaptiveBridge(
+        LinearRegression(), min_accuracy=0.001, correlation_threshold=0.01)
+    # Fit the model with the test data
+    ab.fit(test_data["x_df"], test_data["y_df"])
+    # Set some values in 'circum' feature to NaN
+    x_df = test_data["x_df"].copy()
+    x_df.at[1, 'DocT'] = np.NaN
+    x_df.at[5, 'DocT'] = np.NaN
+    # Perform bridging operation on modified x_df
+    new_x_df = ab.bridge(x_df)
+
+    # Assertions
+    assert not new_x_df.isnull().values.any()
+    assert not new_x_df.isnull().any(axis=0).any()
+    assert new_x_df.size == test_data["x_df"].size
+
+
+def test_bridge_missing_full_mutually_feature_same(test_data):
+    # Create an instance of AdaptiveBridge with LinearRegression model and custom min_accuracy, correlation_threshold
+    ab = adaptivebridge.AdaptiveBridge(
+        LinearRegression(), min_accuracy=0.001, correlation_threshold=0.01)
+    # Fit the model with the test data
+    x_df = test_data["x_df"]
+    x_df["DocT"] = x_df["DocF"]
+    ab.fit(x_df, test_data["y_df"])
+    # Remove 'circum' feature from x_df
+    x_df = x_df.drop(["DocT"], axis=1)
+    # Perform bridging operation on modified x_df
+    new_x_df = ab.bridge(x_df)
+
+    # Assertions
+    assert not new_x_df.isnull().values.any()
+    assert not new_x_df.isnull().any(axis=0).any()
+    assert new_x_df.size == test_data["x_df"].size
+
+
+def test_bridge_missing_partial_mutually_feature_same(test_data):
+    # Create an instance of AdaptiveBridge with LinearRegression model and custom min_accuracy, correlation_threshold
+    ab = adaptivebridge.AdaptiveBridge(
+        LinearRegression(), min_accuracy=0.001, correlation_threshold=0.01)
+    # Fit the model with the test data
+    x_df = test_data["x_df"]
+    x_df["DocT"] = x_df["DocF"]
+    ab.fit(x_df, test_data["y_df"])
+    # Set some values in 'circum' feature to NaN
+    x_df = x_df.copy()
+    x_df.at[1, 'DocT'] = np.NaN
+    x_df.at[5, 'DocT'] = np.NaN
+    # Perform bridging operation on modified x_df
+    new_x_df = ab.bridge(x_df)
+
+    # Assertions
+    assert not new_x_df.isnull().values.any()
+    assert not new_x_df.isnull().any(axis=0).any()
+    assert new_x_df.size == test_data["x_df"].size
+
+
 def test_bridge_missing_partial_feature_adaptive(test_data):
     # Create an instance of AdaptiveBridge with LinearRegression model and custom min_accuracy, correlation_threshold
     ab = adaptivebridge.AdaptiveBridge(
@@ -123,10 +199,10 @@ def test_missing_mandatory_feature_bridge(test_data):
     # Create an instance of AdaptiveBridge with LinearRegression model and custom min_accuracy
     ab = adaptivebridge.AdaptiveBridge(LinearRegression(), min_accuracy=0.001)
     x_df = test_data["x_df"]
+    ab.fit(x_df, test_data["y_df"])
 
     # Assertions using pytest.raises
     with pytest.raises(MandatoryFeatureError, match="A mandatory feature is completely missing: circum"):
-        ab.fit(x_df, test_data["y_df"])
         x_df = x_df.drop(["circum"], axis=1)
         ab.bridge(x_df)
 
@@ -134,6 +210,52 @@ def test_missing_mandatory_feature_bridge(test_data):
         x_df = test_data["x_df"].copy()
         x_df.at[1, 'circum'] = np.NaN
         x_df.at[5, 'circum'] = np.NaN
+        ab.bridge(x_df)
+
+
+def test_missing_mutually_feature_bridge(test_data):
+    # Create an instance of AdaptiveBridge with LinearRegression model and custom min_accuracy
+    ab = adaptivebridge.AdaptiveBridge(LinearRegression(), min_accuracy=0.001)
+    x_df = test_data["x_df"]
+    ab.fit(x_df, test_data["y_df"])
+
+    with pytest.raises(MutuallyFeatureError, match=re.escape("All of the mutually exclusive features is partially missing for feature: DocF")):
+        x_df = test_data["x_df"].copy()
+        x_df.at[5, 'DocT'] = np.NaN
+        x_df.at[5, 'DocF'] = np.NaN
+        ab.bridge(x_df)
+
+    with pytest.raises(MutuallyFeatureError, match=re.escape("All of the mutually exclusive features is partially missing for feature: DocF > (please check for NaN values in your dataset")):
+        x_df = test_data["x_df"].copy()
+        x_df = x_df.drop(["DocT"], axis=1)
+        x_df.at[5, 'DocF'] = np.NaN
+        ab.bridge(x_df)
+
+    with pytest.raises(MutuallyFeatureError, match=re.escape("All of the mutually exclusive features is missing for the feature: DocF")):
+        x_df = test_data["x_df"].copy()
+        x_df = x_df.drop(["DocT"], axis=1)
+        x_df = x_df.drop(["DocF"], axis=1)
+        ab.bridge(x_df)
+
+    with pytest.raises(MutuallyFeatureError, match=re.escape("All of the mutually exclusive features is partially missing for feature: DocF")):
+        x_df = test_data["x_df"].copy()
+        x_df.at[5, 'DocT'] = np.NaN
+        x_df.at[5, 'DocF'] = np.NaN
+        ab.bridge(x_df)
+
+    with pytest.raises(MutuallyFeatureError, match=re.escape("Some of the mutually exclusive features is partially missing for feature: DocF > (please check for NaN values in your dataset)")):
+        x_df = test_data["x_df"].copy()
+        x_df["DocT"] = x_df["DocF"]
+        ab.fit(x_df, test_data["y_df"])
+        x_df = x_df.drop(["DocT"], axis=1)
+        x_df = x_df.drop(["DocF"], axis=1)
+        ab.bridge(x_df)
+
+    with pytest.raises(MutuallyFeatureError, match=re.escape("All of the mutually exclusive features is partially missing for feature: DocF")):
+        x_df = test_data["x_df"].copy()
+        x_df["DocT"] = x_df["DocF"]
+        x_df.at[5, 'DocT'] = np.NaN
+        x_df.at[5, 'DocF'] = np.NaN
         ab.bridge(x_df)
 
 

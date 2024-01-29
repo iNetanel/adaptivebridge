@@ -48,6 +48,7 @@ def test_init():
     assert ab.max_index == (None)
     assert ab.model_map == None
     assert ab.training_time == None
+    assert ab.mutually_exclusive_features_map == None
 
 # Test case for initializing the AdaptiveBridge class with specified parameters
 
@@ -81,6 +82,7 @@ def test__with_parameters_init():
     assert ab.max_index == (None)
     assert ab.model_map == None
     assert ab.training_time == None
+    assert ab.mutually_exclusive_features_map == None
 
 # Test case for string representation of the AdaptiveBridge class
 

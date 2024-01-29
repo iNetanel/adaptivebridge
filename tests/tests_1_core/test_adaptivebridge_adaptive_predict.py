@@ -22,7 +22,7 @@ def test_data():
     data = pd.read_csv('./tests/test_data.csv', header=0, sep=',')
     # Separate dependent and independent variables
     y_df = data["weight"]
-    x_df = data.drop(["weight"], axis=1)
+    x_df = data.drop(["weight", "DocT", "DocF"], axis=1)
 
     return {
         "x_df": x_df,
@@ -32,7 +32,7 @@ def test_data():
 # Test case for a pandas Series with a single mode
 
 
-def test__adaptive_predict(test_data):
+def test_adaptive_predict(test_data):
     # Create an instance of AdaptiveBridge with LinearRegression model and specified parameters
     ab = adaptivebridge.AdaptiveBridge(
         LinearRegression(), min_accuracy=0.001, correlation_threshold=0.01)
@@ -49,7 +49,7 @@ def test__adaptive_predict(test_data):
 # Test case for a pandas Series with a single mode
 
 
-def test__adaptive_predict_second_case(test_data):
+def test_adaptive_predict_second_case(test_data):
     # Create an instance of AdaptiveBridge with LinearRegression model and specified parameters
     ab = adaptivebridge.AdaptiveBridge(
         LinearRegression(), min_accuracy=0.001, correlation_threshold=0.01)
@@ -64,17 +64,6 @@ def test__adaptive_predict_second_case(test_data):
     adaptive_predict = ab._adaptive_predict(adap_x_df, "circum")
     # Assert the size of the result matches the size of the ground truth
     assert adaptive_predict.size == adap_y_df.size
-
-# Test case for a pandas Series with a single mode ##### disable due to warnings of pandas.
-# def test__adaptive_predict_1d_case(test_data):
-#     ab = adaptivebridge.AdaptiveBridge(LinearRegression(), min_accuracy=0.001, correlation_threshold=0.01)
-#     x_df = test_data["x_df"].drop(["radius", "diameter"], axis=1)
-#     ab.fit(x_df, test_data["y_df"])
-#     adap_x_df = pd.DataFrame({"parimeter": test_data["x_df"]["parimeter"]})
-#     adap_x_df_series = adap_x_df["parimeter"]
-#     adap_y_df = test_data["x_df"]["circum"]
-#     adaptive_predict = ab._adaptive_predict(adap_x_df_series, "circum")
-#     assert adaptive_predict.size == adap_y_df.size
 
 
 if __name__ == "__main__":

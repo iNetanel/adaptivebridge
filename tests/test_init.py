@@ -13,6 +13,8 @@ Version: Please refer to the repository for the latest version and updates.
 import pytest
 import os
 
+os.environ["TQDM_DISABLE"] = "1"
+
 
 def test_init():
     # Get the absolute path of the current file
