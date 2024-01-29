@@ -60,6 +60,7 @@ Follow these steps to get started with AdaptiveBridge:
 - Distfit
 - Matplotlib
 - Pytest (Production Dependency)
+- Tqdm
 
 ## Contribution
 

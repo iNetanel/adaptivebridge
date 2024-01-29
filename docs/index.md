@@ -56,6 +56,7 @@ With AdaptiveBridge, integrating this powerful tool into your AI and machine lea
 - Distfit
 - Matplotlib
 - Pytest (For production use only)
+- Tqdm
 
 ## Contribution
 

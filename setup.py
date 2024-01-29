@@ -22,7 +22,7 @@ with open("CHANGELOG.md", "r+") as changelog:
 setup(
     name="adaptivebridge",
     version=adaptivebridge_version,
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests*']),
     install_requires=requirements,
     extras_require={
         "dev": ["pytest>=7.4.2", "twine>4.0.2"],
@@ -84,7 +84,7 @@ setup(
         "Issue Tracker": "https://github.com/inetanel/adaptivebridge/issues",
     },
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
         "Intended Audience :: Information Technology",

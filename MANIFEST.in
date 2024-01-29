@@ -5,7 +5,6 @@ exclude .git/
 exclude data/
 exclude notebooks/
 exclude workspace/
-exclude tests/
 
 # Include specific files
 include requirements.txt
