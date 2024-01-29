@@ -27,6 +27,7 @@ from ._data_validation import (
 from ._error_handler import (
     MandatoryFeatureError,
     EngineeringFeatureError,
+    MutuallyFeatureError,
 )
 
 __all__ = [
@@ -35,4 +36,5 @@ __all__ = [
     "_mean_absolute_percentage_error",
     "MandatoryFeatureError",
     "EngineeringFeatureError",
+    "MutuallyFeatureError",
 ]

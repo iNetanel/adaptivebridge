@@ -16,6 +16,7 @@ from itertools import combinations
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 # Import AdaptiveBridge methods and helpers
 from .utils import (
@@ -24,6 +25,7 @@ from .utils import (
     _mean_absolute_percentage_error,
     MandatoryFeatureError,
     EngineeringFeatureError,
+    MutuallyFeatureError,
 )
 
 # Default values for AdaptiveBridge
@@ -91,6 +93,8 @@ class AdaptiveBridge:
         )
         self.model_map = None  # Placeholder for a mapping of features and models
         self.training_time = None  # Placeholder for a training time
+        # Placeholder for a mutuall exlusive
+        self.mutually_exclusive_features_map = None
 
     # Define a string representation for the class
     def __str__(self):
@@ -170,6 +174,7 @@ class AdaptiveBridge:
         self.max_index = (
             self.feature_importance.idxmax()
         )  # Find the index of the maximum feature importance
+        self._mutually_exclusive_detection()  # Find mutuall features
         (
             self.model_map,
             self.training_time,
@@ -293,7 +298,11 @@ class AdaptiveBridge:
         cleared_matrix = matrix[criteria1 | criteria2]
         drop_matrix = cleared_matrix[feature]
         drop_matrix = drop_matrix.dropna()
-        return drop_matrix.index.tolist() + self.feature_engineering
+        drop_mutually_exclusive = list(
+            self.mutually_exclusive_features_map["diff"]) + list(self.mutually_exclusive_features_map["same"])
+        drop_list = list(set(drop_matrix.index.tolist() +
+                         self.feature_engineering + drop_mutually_exclusive))
+        return drop_list
 
     # Method to generate all combinations of features
     def _all_combinations(self, x_df):
@@ -325,8 +334,26 @@ class AdaptiveBridge:
 
         model = copy.deepcopy(self.model)
         model_map = {}
-        for feature in self.x_df.columns:
-            if feature not in self.feature_engineering:
+        for feature in tqdm(self.x_df.columns, desc="Mapping Adaptive Model and Features ...", leave=True):
+            if feature in self.feature_engineering:
+                model_map[feature] = {
+                    0: {
+                        "accuracy": None,
+                        "distribution": None,
+                        "features": None,
+                        "model": None,
+                    }
+                }
+            elif feature in self.mutually_exclusive_features_map["full"]:
+                model_map[feature] = {
+                    0: {
+                        "accuracy": None,
+                        "distribution": None,
+                        "features": None,
+                        "model": None,
+                    }
+                }
+            else:
                 x_df = self.x_df.drop(self._drop_matrix(feature), axis=1)
                 y_df = self.x_df[feature].values.reshape(-1, 1)
                 i = 0
@@ -371,21 +398,58 @@ class AdaptiveBridge:
                         if acc >= self.default_accuracy_selection:
                             break
                     i += 1
-            else:
-                model_map[feature] = {
-                    0: {
-                        "accuracy": None,
-                        "distribution": None,
-                        "features": None,
-                        "model": None,
-                    }
-                }
 
         # Set time and format the UTC time as a string
         formatted_utc_time = time.strftime(
             "%Y-%m-%d %H:%M:%S", time.gmtime(time.time())
         )
         return model_map, formatted_utc_time
+
+    def _mutually_exclusive_detection(self):
+        self.mutually_exclusive_features_map = {"diff": {},
+                                                "same": {},
+                                                "full": []
+                                                }
+        # Check unique values in each feature
+        diff_list = []
+        same_list = []
+        unique_values_per_feature = self.x_df.apply(lambda x: len(x.unique()))
+        # Check for features with only two unique values (potential one-hot encoding and mutually exclusive)
+        potential_one_hot_encoded_features = unique_values_per_feature[unique_values_per_feature <= 2].index.tolist(
+        )
+        if potential_one_hot_encoded_features:
+            # Explore relationships between features
+            for feature_i in tqdm(potential_one_hot_encoded_features, desc="Mutually Exclusive Estimation...", leave=True):
+                # for i in range(len(potential_one_hot_encoded_features)):
+                for feature_j in potential_one_hot_encoded_features:
+                    if feature_i == feature_j:
+                        continue
+                    # Check if the two features are mutually exclusive for different
+                    if (self.x_df[feature_i] != self.x_df[feature_j]).all():
+                        if feature_i in self.mutually_exclusive_features_map["diff"].keys():
+                            self.mutually_exclusive_features_map["diff"][feature_i].append(
+                                feature_j)
+                        else:
+                            self.mutually_exclusive_features_map["diff"][feature_i] = [
+                                feature_j]
+
+                    # Check if the two features are mutually exclusive for the same
+                    if (self.x_df[feature_i] == self.x_df[feature_j]).all():
+                        if feature_i in self.mutually_exclusive_features_map["same"].keys():
+                            self.mutually_exclusive_features_map["same"][feature_i].append(
+                                feature_j)
+                        else:
+                            self.mutually_exclusive_features_map["same"][feature_i] = [
+                                feature_j]
+
+        diff_list = list(self.mutually_exclusive_features_map["diff"].keys())
+        for values in self.mutually_exclusive_features_map["diff"].values():
+            diff_list.extend(values)
+        same_list = list(self.mutually_exclusive_features_map["same"].keys())
+        for values in self.mutually_exclusive_features_map["same"].values():
+            same_list.extend(values)
+        self.mutually_exclusive_features_map["full"] = list(
+            set(diff_list + same_list))
 
     # Method to identify mandatory and deviation features
     def _mandatory_and_distribution(self):
@@ -403,6 +467,10 @@ class AdaptiveBridge:
                         self.feature_map["engineering"][feature] = self.model_map[
                             feature
                         ][i]
+                    elif feature in self.mutually_exclusive_features_map["full"]:
+                        self.feature_map["mutually_exclusive"][feature] = self.model_map[
+                            feature
+                        ][i]
                     elif (
                         self.feature_importance[feature]
                         / (np.sum(self.feature_importance, axis=0))
@@ -416,6 +484,8 @@ class AdaptiveBridge:
                         ][i]
 
         for feature in self.feature_map["engineering"]:
+            del self.model_map[feature]
+        for feature in self.feature_map["mutually_exclusive"]:
             del self.model_map[feature]
         for feature in self.feature_map["mandatory"]:
             del self.model_map[feature]
@@ -522,6 +592,14 @@ class AdaptiveBridge:
         else:
             for i in self.feature_map["engineering"]:
                 print(f" - Feature {i}")
+        print(
+            "\nMutually Exclusive features: (will use mutually exclusive feature-map)"
+        )
+        if len(self.feature_map["mutually_exclusive"]) == 0:
+            print(" - None")
+        else:
+            for i in self.feature_map["mutually_exclusive"]:
+                print(f" - Feature {i}")
 
         print("\nMandatory: (Must be provided by the user)")
         if len(self.feature_map["mandatory"]) == 0:
@@ -543,7 +621,7 @@ class AdaptiveBridge:
                     )
                 )
 
-        print("\nPrediction by Adaptive Model: (will be predict by adaptiv model)")
+        print("\nPrediction by Adaptive Model: (will be predict by adaptive model)")
         if len(self.feature_map["adaptive"]) == 0:
             print(" - None")
         else:
@@ -565,6 +643,7 @@ class AdaptiveBridge:
 
         self.feature_map = {
             "engineering": {},
+            "mutually_exclusive": {},
             "mandatory": {},
             "deviation": {},
             "adaptive": {}
@@ -619,10 +698,86 @@ class AdaptiveBridge:
         for feature in self.feature_map["deviation"]:
             if feature not in x_df.columns:
                 x_df[feature] = self.feature_map["deviation"][feature]["distribution"][2]
-            if x_df[feature].isna().any().any():
+            elif x_df[feature].isna().any().any():
                 x_df[feature] = x_df[feature].fillna(
                     self.feature_map["deviation"][feature]["distribution"][2])
 
+        # Handling of mutually exclusive method
+        for feature in self.feature_map["mutually_exclusive"]:
+            if feature not in x_df.columns:
+                if self.mutually_exclusive_features_map["diff"] and self.mutually_exclusive_features_map["diff"][feature]:
+                    mutually_feature_diff = next(
+                        (item for item in x_df.columns if item in self.mutually_exclusive_features_map["diff"][feature]), None)
+                    if mutually_feature_diff is None:
+                        if self.mutually_exclusive_features_map["same"] and self.mutually_exclusive_features_map["same"][feature]:
+                            mutually_feature_same = next(
+                                (item for item in x_df.columns if item in self.mutually_exclusive_features_map["same"][feature]), None)
+                            if mutually_feature_same is None:
+                                raise MutuallyFeatureError(
+                                    f"All of the mutually exclusive features is missing for the feature: {feature}"
+                                )
+                            else:
+                                x_df[feature] = x_df[mutually_feature_same].astype(
+                                    int)
+                        else:
+                            raise MutuallyFeatureError(
+                                f"All of the mutually exclusive features is missing for the feature: {feature}"
+                            )
+                    else:
+                        x_df[feature] = x_df[mutually_feature_diff].apply(
+                            lambda x: 0 if x == 1 else 1)
+
+                else:
+                    mutually_feature_same = next(
+                        (item for item in x_df.columns if item in self.mutually_exclusive_features_map["same"][feature]), None)
+                    if mutually_feature_same:
+                        x_df[feature] = x_df[mutually_feature_same].astype(int)
+                    else:
+                        raise MutuallyFeatureError(
+                            f"Some of the mutually exclusive features is partially missing for feature: {feature} > (please check for NaN values in your dataset)"
+                        )
+            elif x_df[feature].isna().any().any():
+                if self.mutually_exclusive_features_map["diff"] and self.mutually_exclusive_features_map["diff"][feature]:
+                    mutually_feature_diff = next(
+                        (item for item in x_df.columns if item in self.mutually_exclusive_features_map["diff"][feature]), None)
+                    if mutually_feature_diff is None:
+                        if self.mutually_exclusive_features_map["same"] and self.mutually_exclusive_features_map["same"][feature]:
+                            mutually_feature_same = next(
+                                (item for item in x_df.columns if item in self.mutually_exclusive_features_map["same"][feature]), None)
+                            if mutually_feature_same is None:
+                                raise MutuallyFeatureError(
+                                    f"All of the mutually exclusive features is partially missing for feature: {feature} > (please check for NaN values in your dataset)"
+                                )
+                            else:
+                                try:
+                                    x_df[feature] = x_df[feature].fillna(
+                                        x_df[mutually_feature_same]).astype(int)
+                                except:
+                                    raise MutuallyFeatureError(
+                                        f"All of the mutually exclusive features is partially missing for feature: {feature} > (please check for NaN values in your dataset)"
+                                    )
+                        else:
+                            raise MutuallyFeatureError(
+                                f"All of the mutually exclusive features is partially missing for feature: {feature} > (please check for NaN values in your dataset)"
+                            )
+                    else:
+                        try:
+                            x_df[feature] = x_df[feature].fillna(
+                                abs(x_df[mutually_feature_diff]-1)).astype(int)
+                        except:
+                            raise MutuallyFeatureError(
+                                f"All of the mutually exclusive features is partially missing for feature: {feature} > (please check for NaN values in your dataset)"
+                            )
+                else:
+                    try:
+                        mutually_feature_same = next(
+                            (item for item in x_df.columns if item in self.mutually_exclusive_features_map["same"][feature]), None)
+                        x_df[feature] = x_df[feature].fillna(
+                            x_df[mutually_feature_same]).astype(int)
+                    except:
+                        raise MutuallyFeatureError(
+                            f"All of the mutually exclusive features is partially missing for feature: {feature} > (please check for NaN values in your dataset)"
+                        )
         # Handling missing features with adaptive prediction
         for feature in self.feature_map["adaptive"]:
             if feature not in x_df.columns:
@@ -630,7 +785,7 @@ class AdaptiveBridge:
                     x_df[self.feature_map["adaptive"]
                          [feature]["features"]], feature
                 )
-            if x_df[feature].isna().any().any():
+            elif x_df[feature].isna().any().any():
                 mask = x_df[feature].isna()
                 x_df.loc[mask, feature] = self._adaptive_predict(
                     x_df.loc[mask][self.feature_map["adaptive"]
