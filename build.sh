@@ -10,6 +10,7 @@ rm -rf adaptivebridge/__pycache__
 rm -rf adaptivebridge/.pylint.d
 rm -rf .pytest_cache
 rm -rf .pylint.d
+rm requirements.txt
 
 echo "Run components tests..."
 pytest --cov=adaptivebridge

@@ -1,9 +1,11 @@
 # Exclude files and directories specified in .gitignore
 exclude .gitignore
+exclude build.sh
 exclude .git/
 exclude data/
 exclude notebooks/
 exclude workspace/
+exclude tests/
 
 # Include specific files
 include requirements.txt
