@@ -244,7 +244,7 @@ class AdaptiveBridge:
 
         # Create a new Series with the same columns as the original DataFrame
         im_df = pd.Series("", index=self.x_df.columns)
-        for index_name in im_df.index:
+        for index_name in tqdm(im_df.index, desc="Calculating Feature Importance...   ", leave=True):
             # Use the data distribution to have better feature importance
             im_df.at[index_name] = self.feature_distribution[index_name][2]
 
@@ -273,7 +273,7 @@ class AdaptiveBridge:
         """
 
         feature_distribution = {}
-        for feature in self.x_df.columns:
+        for feature in tqdm(self.x_df.columns, desc="Determining Feature Distribution... ", leave=True):
             # Check if data is binary (0 or 1)
             feature_distribution[feature] = _fit_distribution(
                 self.x_df[feature])
@@ -334,7 +334,7 @@ class AdaptiveBridge:
 
         model = copy.deepcopy(self.model)
         model_map = {}
-        for feature in tqdm(self.x_df.columns, desc="Mapping Adaptive Model and Features ...", leave=True):
+        for feature in tqdm(self.x_df.columns, desc="Mapping Models and Features...      ", leave=True):
             if feature in self.feature_engineering:
                 model_map[feature] = {
                     0: {
@@ -419,7 +419,7 @@ class AdaptiveBridge:
         )
         if potential_one_hot_encoded_features:
             # Explore relationships between features
-            for feature_i in tqdm(potential_one_hot_encoded_features, desc="Mutually Exclusive Estimation...", leave=True):
+            for feature_i in tqdm(potential_one_hot_encoded_features, desc="Estimating Mutually Exclusive...    ", leave=True):
                 # for i in range(len(potential_one_hot_encoded_features)):
                 for feature_j in potential_one_hot_encoded_features:
                     if feature_i == feature_j:
@@ -460,7 +460,7 @@ class AdaptiveBridge:
             None
         """
 
-        for feature in self.model_map:
+        for feature in tqdm(self.model_map, desc="Creating Feature Dependencies...    ", leave=True):
             for i in self.model_map[feature]:
                 if self.model_map[feature][i]["features"] is None:
                     if feature in self.feature_engineering:
