@@ -32,7 +32,7 @@ model = LinearRegression()
 ```
 
 Currently, AdaptiveBridge is designed to work with most scikit-learn models.
-Refer to the list below for unsupported models:
+Refer to the list below for unsupported models (for now):
 
 - `KNeighborsClassifier`
 

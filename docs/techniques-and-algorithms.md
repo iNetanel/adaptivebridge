@@ -25,3 +25,21 @@ The impact of a feature reflects its actual contribution to predictions. This im
 By using magnitude (w), and impact only, we are calculating the feature's importance and effectiveness.
 
 The feature's importance can be accessed by the instance variable `AdaptiveBridge.feature_importance_score()`.
+
+### Features Mutually Exlusive
+
+The concept of features being mutually exclusive refers to the relationships and dependencies between different features in a dataset. This technique is particularly useful when dealing with one-hot encoded features or instances where the values of one feature inherently affect the values of another. The two main scenarios for features being mutually exclusive are:
+
+**One-Hot Encoded Features:**
+
+In scenarios where features are one-hot encoded, such as representing gender with "male" and "female" as separate features, the relationship between them is mutually exclusive. When one of these features is true (e.g., male=1), the other is necessarily false (e.g., female=0). This mutual exclusivity allows for a rapid assessment of the relationships between such features without the need for additional predictions.
+
+For instance, if the feature "male" is true, it inherently implies that "female" is false, and vice versa. This mutual exclusivity facilitates a quick bridge for handling missing data in the future, as the presence or absence of one feature inherently determines the state of the other.
+
+**Same Entity, Different Representations:**
+
+Another scenario arises when different features represent the same entity in varying forms. For example, consider features representing "city" and "country." In this case, if the city is "London," it implies that the country is "UK" and vice versa.
+
+This mutual exclusivity allows for efficient handling of such interconnected features. Predictions or imputations for one feature can be directly translated to the corresponding values of the interconnected feature, streamlining the process of dealing with missing or incomplete data.
+
+Incorporating the knowledge of mutually exclusive relationships between features enhances the adaptability and robustness of models, especially in cases where the relationships between features carry inherent dependencies that can be leveraged for data handling and imputation.
