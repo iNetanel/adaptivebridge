@@ -153,8 +153,7 @@ dmypy.json
 cython_debug/
 
 # Data
-*.csv
-*.xlsx
+data/ 
 
 # Jupyter
 *.ipynb
